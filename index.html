@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Álbum Web - Jaipo Project</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Pantalla previa (Terminal) -->
+    <div id="startup-screen" class="startup-screen">
+        <p class="startup-message">Presiona cualquier boton para continuar...</p>
+        <div class="startup-cursor">><span class="blink">_</span></div>
+    </div>
+
+    <!-- Filtros SVG ocultos -->
+    <svg style="display: none;">
+        <defs>
+            <filter id="static-noise">
+                <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise" />
+                <feColorMatrix type="matrix" values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0.5 0" in="noise" />
+            </filter>
+
+            <filter id="water-effect" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="turbulence" />
+                <feOffset id="water-offset" in="turbulence" result="movedTurbulence" dx="0" dy="0" />
+                <feDisplacementMap in="SourceGraphic" in2="movedTurbulence" scale="10" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Contenedor que simula la pantalla CRT -->
+    <div class="crt-screen">
+        <div class="static-overlay"></div>
+        
+        <div class="album-container">
+            
+            <!-- FILA SUPERIOR -->
+            <div class="row row-top">
+                <a href="#cancion1" class="item top-1 bg-top-1" data-index="1">
+                    <div class="content"><h2>Me Dejo Llevar</h2><p>(Tengo que confiar)</p></div>
+                </a>
+                <a href="#cancion2" class="item top-2 bg-top-2" data-index="2">
+                    <div class="content"><h2>ET</h2><p>Track 2</p></div>
+                </a>
+                <a href="#cancion3" class="item top-3 bg-top-3" data-index="3">
+                    <div class="content"><h2>CHOP</h2><p>Track 3</p></div>
+                </a>
+                <a href="#cancion4" class="item top-4 bg-top-4" data-index="4">
+                    <div class="content"><h2>VERDE</h2><p>Track 4</p></div>
+                </a>
+                <a href="#cancion5" class="item top-5 bg-top-5" data-index="5">
+                    <div class="content"><h2>Hey Di EM</h2><p>Track 5</p></div>
+                </a>
+                <a href="#cancion6" class="item top-6 bg-top-6" data-index="6">
+                    <div class="content"><h2>Mueres por Libertad</h2><p>Track 6</p></div>
+                </a>
+                <a href="#cancion7" class="item top-7 bg-top-7" data-index="7">
+                    <div class="content"><h2>Ya No Hay Forma</h2><p>Track 7</p></div>
+                </a>
+            </div>
+
+            <!-- FILA MEDIA -->
+            <div class="row row-mid">
+                <div class="item mid-1 bg-mid-1" data-index="1"></div>
+                <div class="item mid-2 bg-mid-2" data-index="2"></div>
+                <div class="item mid-3 bg-mid-3" data-index="3"></div>
+                <div class="item mid-4 bg-mid-4" data-index="4"></div>
+                <div class="item mid-5 bg-mid-5" data-index="5"></div>
+                <div class="item mid-6 bg-mid-6" data-index="6"></div>
+                <div class="item mid-7 bg-mid-7" data-index="7"></div>
+            </div>
+
+            <!-- FILA INFERIOR -->
+            <div class="row row-bot">
+                <div class="item bot-1 bg-bot-1"></div>
+                <div class="item bot-2 bg-bot-2"></div>
+                <div class="item bot-3 bg-bot-3"></div>
+                <div class="item bot-4 bg-bot-4"></div>
+                <div class="item bot-5 sub-container">
+                    <div class="sub-item bg-bot-5-1"></div>
+                    <div class="sub-item bg-bot-5-2"></div>
+                    <div class="sub-item bg-bot-5-3"></div>
+                </div>
+                <div class="item bot-6 bg-bot-6"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

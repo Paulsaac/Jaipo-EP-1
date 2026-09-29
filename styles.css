@@ -1,0 +1,287 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ==================================================
+   PANTALLA PREVIA DE TERMINAL
+   ================================================== */
+.startup-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+    cursor: pointer;
+}
+
+.startup-screen::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: url('Photos/jaipo.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: auto; /* Mantiene la resolución original */
+    opacity: 0.4; 
+    filter: url(#water-effect) contrast(200%) saturate(120%) brightness(0.9) blur(1px);
+    transform: scale(1.1) translateZ(0); /* translateZ(0) fuerza la aceleración por tarjeta de video */
+    will-change: filter, transform; /* Le avisa al navegador que debe optimizar estos procesos */
+    z-index: -1; 
+    pointer-events: none;
+}
+
+.startup-message {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: #fff;
+    opacity: 0.9;
+}
+
+.startup-cursor {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.blink {
+    animation: blink-cursor 1s step-end infinite;
+}
+
+@keyframes blink-cursor {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* ==================================================
+   PANTALLA COMPLETA CRT
+   ================================================== */
+.crt-screen {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0; 
+    overflow: hidden;
+    position: relative;
+    background-color: #000;
+    
+    /* Inicia apagada/invisible */
+    transform: scale(0, 0);
+    transform-origin: center center;
+}
+
+/* Esta clase se añade por JS al hacer click en la terminal */
+.crt-screen.turned-on {
+    animation: tv-turn-on 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes tv-turn-on {
+    0% { transform: scale(0, 0); filter: brightness(10) contrast(3); }
+    30% { transform: scale(0.01, 0.01); filter: brightness(10) contrast(3); }
+    75% { transform: scale(1.02, 1.02); filter: brightness(2) contrast(1.2); }
+    100% { transform: scale(1, 1); filter: brightness(1) contrast(1); }
+}
+
+/* Animación inversa para apagar la terminal */
+.startup-screen.turning-off {
+    animation: tv-turn-off 0.4s cubic-bezier(0.8, 0, 1, 1) forwards;
+}
+
+@keyframes tv-turn-off {
+    0% { transform: scale(1, 1); filter: brightness(1); }
+    20% { transform: scale(1.05, 1.05); filter: brightness(2); } /* Pequeña anticipación */
+    80% { transform: scale(0.01, 0.01); filter: brightness(10); } /* Se encoge a un punto */
+    100% { transform: scale(0, 0); filter: brightness(10); } /* Desaparece */
+}
+
+.crt-screen::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.4) 100%);
+    z-index: 9999;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+}
+
+.crt-screen::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.15) 50%);
+    background-size: 100% 4px;
+    z-index: 9998;
+    pointer-events: none;
+}
+
+.static-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    filter: url(#static-noise);
+    mix-blend-mode: screen;
+    opacity: 0.02; 
+    z-index: 9997;
+    pointer-events: none;
+}
+
+.album-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background: #000;
+}
+
+/* ==================================================
+   GLITCHES Y ESTÁTICA
+   ================================================== */
+.glitch-effect-1 { animation: glitch-anim-1 0.15s ease-in-out; }
+.glitch-effect-2 { animation: glitch-anim-2 0.1s steps(2); }
+.glitch-effect-3 { animation: glitch-anim-3 0.2s ease-in-out; }
+.glitch-effect-4 { animation: glitch-anim-4 0.15s ease-out; }
+.glitch-effect-5 { animation: glitch-anim-5 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); }
+.glitch-effect-6 { animation: glitch-anim-6 0.15s steps(2); }
+
+@keyframes glitch-anim-1 { 0%, 100% { transform: translate(0, 0) skew(0deg); } 50% { transform: translate(-3px, 1px) skew(-1deg); filter: hue-rotate(10deg); } }
+@keyframes glitch-anim-2 { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scaleX(1.01) skewX(2deg); filter: brightness(1.1); } }
+@keyframes glitch-anim-3 { 0%, 100% { transform: translateY(0); filter: grayscale(0); } 50% { transform: translateY(-1vh); filter: grayscale(0.3); } }
+@keyframes glitch-anim-4 { 0%, 100% { transform: scale(1); filter: invert(0); } 50% { transform: scale(1.01); filter: invert(0.1) hue-rotate(10deg); } }
+@keyframes glitch-anim-5 { 0%, 100% { transform: translate(0) skew(0); } 50% { transform: translate(-2px, -1px) skew(1deg, 0deg); filter: sepia(0.2); } }
+@keyframes glitch-anim-6 { 0%, 100% { transform: translate(0); filter: blur(0); } 50% { transform: translate(-2px, 0); filter: blur(1px); } }
+
+.static-flash-1 { animation: flash-1 0.15s; }
+.static-flash-2 { animation: flash-2 0.1s; }
+.static-flash-3 { animation: flash-3 0.2s; }
+.static-flash-4 { animation: flash-4 0.15s; }
+.static-flash-5 { animation: flash-5 0.2s; }
+.static-flash-6 { animation: flash-6 0.15s; }
+
+@keyframes flash-1 { 0%, 100%{ opacity: 0.02; } 50%{ opacity: 0.1; } }
+@keyframes flash-2 { 0%, 100%{ opacity: 0.02; } 50%{ opacity: 0.15; } }
+@keyframes flash-3 { 0%, 100%{ opacity: 0.02; } 50%{ opacity: 0.08; } }
+@keyframes flash-4 { 0%, 100%{ opacity: 0.02; } 50%{ opacity: 0.12; transform: scale(1.01); } }
+@keyframes flash-5 { 0%, 100%{ opacity: 0.02; } 50%{ opacity: 0.1; } }
+@keyframes flash-6 { 0%, 100%{ opacity: 0.02; } 50%{ opacity: 0.15; } }
+
+/* ==================================================
+   BARRAS Y CONTENIDO
+   ================================================== */
+.row { display: flex; width: 100%; }
+.row-top { flex: 65; }
+.row-mid { flex: 10; }
+.row-bot { flex: 25; }
+
+.item {
+    flex: 1; 
+    transition: flex 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.3s ease;
+    display: flex;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    text-decoration: none;
+    z-index: 1;
+}
+
+.item.hovered { flex: 1.8; filter: brightness(1.15); }
+
+.sub-container { display: flex; flex-direction: row; padding: 0; }
+.sub-item { flex: 1; height: 100%; position: relative; overflow: hidden; z-index: 1; }
+
+@keyframes breathe {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+.item::before, .sub-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%; 
+    z-index: -1;
+    background-color: var(--bg-color, transparent);
+    background-image: var(--bg-img, none);
+    background-size: cover;
+    background-position: center;
+    transition: transform 1s ease;
+}
+
+.item.hovered::before, .sub-item.hovered::before {
+    animation: breathe 6s ease-in-out infinite;
+    transform: scale(1.15); 
+}
+
+.content {
+    opacity: 0;
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translate(-50%, 30px);
+    transition: all 0.5s ease;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 15px 10px;
+    border-radius: 4px;
+    width: 85%;
+    backdrop-filter: blur(5px);
+    color: white;
+    pointer-events: none;
+}
+.bg-top-1 .content { background: rgba(255, 255, 255, 0.85); color: black; }
+.item.hovered .content { opacity: 1; transform: translate(-50%, 0); }
+
+.content h2 { font-size: 1.2rem; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
+.content p { font-size: 0.85rem; opacity: 0.9; }
+
+/* ==================================================
+   VARIABLES DE COLORES
+   ================================================== */
+.bg-top-1 { --bg-color: #d4d4d4; --bg-img: url('Photos/colorbar detail/Row 1/1-1.png'); }
+.bg-top-2 { --bg-color: #d1c000; --bg-img: url('Photos/colorbar detail/Row 1/2-1.png'); }
+.bg-top-3 { --bg-color: #00c3c3; --bg-img: url('Photos/colorbar detail/Row 1/3-1.png'); }
+.bg-top-4 { --bg-color: #1c901c; --bg-img: url('Photos/colorbar detail/Row 1/4-1.png'); }
+.bg-top-5 { --bg-color: #c400c4; --bg-img: url('Photos/colorbar detail/Row 1/5-1.png'); }
+.bg-top-6 { --bg-color: #d30000; --bg-img: url('Photos/colorbar detail/Row 1/6-1.png'); }
+.bg-top-7 { --bg-color: #0000d3; --bg-img: url('Photos/colorbar detail/Row 1/7-1.png'); }
+
+.bg-mid-1 { --bg-color: #0000a0; --bg-img: url('Photos/colorbar detail/Row 2/1-2.png'); }
+.bg-mid-2 { --bg-color: #222222; --bg-img: url('Photos/colorbar detail/Row 2/2-2.png'); }
+.bg-mid-3 { --bg-color: #c400c4; --bg-img: url('Photos/colorbar detail/Row 2/3-2.png'); }
+.bg-mid-4 { --bg-color: #111111; --bg-img: url('Photos/colorbar detail/Row 2/4-2.png'); }
+.bg-mid-5 { --bg-color: #00c3c3; --bg-img: url('Photos/colorbar detail/Row 2/5-2.png'); }
+.bg-mid-6 { --bg-color: #555555; --bg-img: url('Photos/colorbar detail/Row 2/6-2.png'); }
+.bg-mid-7 { --bg-color: #999999; --bg-img: url('Photos/colorbar detail/Row 2/7-2.png'); }
+
+.bg-bot-1 { --bg-color: #1a4b8c; --bg-img: url('Photos/colorbar detail/Row 3/1-3.png'); }
+.bg-bot-2 { --bg-color: #e0e0e0; --bg-img: url('Photos/colorbar detail/Row 3/2-3.png'); }
+.bg-bot-3 { --bg-color: #3b0066; --bg-img: url('Photos/colorbar detail/Row 3/3-3.png'); }
+.bg-bot-4 { --bg-color: #1a1a1a; --bg-img: url('Photos/colorbar detail/Row 3/4-3.png'); }
+.bg-bot-5-1 { --bg-color: #151515; --bg-img: url('Photos/colorbar detail/Row 3/5-3.png'); }
+.bg-bot-5-2 { --bg-color: #4a4a4a; --bg-img: url('Photos/colorbar detail/Row 3/6-3.png'); }
+.bg-bot-5-3 { --bg-color: #0a0a0a; --bg-img: url('Photos/colorbar detail/Row 3/7-3.png'); }
+.bg-bot-6 { --bg-color: #151515; --bg-img: url('Photos/colorbar detail/Row 3/8-3.png'); }
+
+@media (max-width: 768px) {
+    .album-container { overflow-y: auto; height: auto; display: block; }
+    .row { flex-direction: column; height: auto; }
+    .row-top, .row-bot { flex: none; height: auto; }
+    .row-mid { display: none; }
+    .item { height: 150px; width: 100%; }
+    .sub-container { flex-direction: row; }
+}
