@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Álbum Web - Jaipo Project</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -38,57 +39,124 @@
             
             <!-- FILA SUPERIOR -->
             <div class="row row-top">
-                <a href="#cancion1" class="item top-1 bg-top-1" data-index="1">
+                <a href="#cancion1" class="item top-1 bg-top-1" data-index="1" data-unlock-time="2026-09-29T22:00:00-03:00" data-audio="Audios/Canciones/Me dejo llevar (Tengo que confiar).mp3">
                     <div class="content"><h2>Me Dejo Llevar</h2><p>(Tengo que confiar)</p></div>
                 </a>
-                <a href="#cancion2" class="item top-2 bg-top-2" data-index="2">
+                <a href="#cancion2" class="item top-2 bg-top-2" data-index="2" data-audio="Audios/Canciones/ET The Extraterrestrial.mp3">
                     <div class="content"><h2>ET</h2><p>Track 2</p></div>
                 </a>
-                <a href="#cancion3" class="item top-3 bg-top-3" data-index="3">
+                <a href="#cancion3" class="item top-3 bg-top-3" data-index="3" data-unlock-time="2026-09-29T22:00:00-03:00">
                     <div class="content"><h2>CHOP</h2><p>Track 3</p></div>
                 </a>
-                <a href="#cancion4" class="item top-4 bg-top-4" data-index="4">
+                <a href="#cancion4" class="item top-4 bg-top-4" data-index="4" data-unlock-time="2026-09-29T22:00:00-03:00">
                     <div class="content"><h2>VERDE</h2><p>Track 4</p></div>
                 </a>
-                <a href="#cancion5" class="item top-5 bg-top-5" data-index="5">
+                <a href="#cancion5" class="item top-5 bg-top-5" data-index="5" data-unlock-time="2026-09-29T22:00:00-03:00" data-audio="Audios/Canciones/Hey! di em.mp3">
                     <div class="content"><h2>Hey Di EM</h2><p>Track 5</p></div>
                 </a>
-                <a href="#cancion6" class="item top-6 bg-top-6" data-index="6">
+                <a href="#cancion6" class="item top-6 bg-top-6" data-index="6" data-audio="Audios/Canciones/Mueres por Libertad.mp3">
                     <div class="content"><h2>Mueres por Libertad</h2><p>Track 6</p></div>
                 </a>
-                <a href="#cancion7" class="item top-7 bg-top-7" data-index="7">
+                <a href="#cancion7" class="item top-7 bg-top-7" data-index="7" data-unlock-time="2026-09-29T22:00:00-03:00">
                     <div class="content"><h2>Ya No Hay Forma</h2><p>Track 7</p></div>
                 </a>
             </div>
 
             <!-- FILA MEDIA -->
             <div class="row row-mid">
-                <div class="item mid-1 bg-mid-1" data-index="1"></div>
+                <div class="item mid-1 bg-mid-1" id="play-pause-trigger" data-index="1">
+                    <div class="content"><div id="grid-player-icon" style="font-size: 4rem; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.8);">&#9654;</div></div>
+                </div>
                 <div class="item mid-2 bg-mid-2" data-index="2"></div>
-                <div class="item mid-3 bg-mid-3" data-index="3"></div>
+                <div class="item mid-3 bg-mid-3" data-index="3" data-url="https://www.instagram.com/jaipo.oficial/">
+                    <div class="content"><h2>INSTAGRAM</h2><p>@jaipo.oficial</p></div>
+                </div>
                 <div class="item mid-4 bg-mid-4" data-index="4"></div>
-                <div class="item mid-5 bg-mid-5" data-index="5"></div>
+                <div class="item mid-5 bg-mid-5" id="barrel-trigger" data-index="5">
+                    <div class="content"><h2 style="font-size: 3rem; margin:0;">?</h2></div>
+                </div>
                 <div class="item mid-6 bg-mid-6" data-index="6"></div>
-                <div class="item mid-7 bg-mid-7" data-index="7"></div>
+                <div class="item mid-7 bg-mid-7" id="player-trigger" data-index="7">
+                    <div class="content"><h2>PLAYLIST</h2><p>Abrir Reproductor</p></div>
+                </div>
             </div>
 
             <!-- FILA INFERIOR -->
             <div class="row row-bot">
-                <div class="item bot-1 bg-bot-1"></div>
-                <div class="item bot-2 bg-bot-2"></div>
-                <div class="item bot-3 bg-bot-3"></div>
+                <div class="item bot-1 bg-bot-1" data-url="https://www.youtube.com/channel/UCpwOXlKG6v7CW-PJ4bOoIBQ">
+                    <div class="content"><h2>YOUTUBE</h2><p>Canal Oficial</p></div>
+                </div>
+                <div class="item bot-2 bg-bot-2" data-url="mailto:jaipo.oficial@gmail.com">
+                    <div class="content"><h2>CONTACTO</h2><p>jaipo.oficial@gmail.com</p></div>
+                </div>
+                <div class="item bot-3 bg-bot-3" data-url="https://open.spotify.com/intl-es/artist/2IlT5vNSIM8yz2UVTRm3kR">
+                    <div class="content"><h2>SPOTIFY</h2><p>Jaipo</p></div>
+                </div>
                 <div class="item bot-4 bg-bot-4"></div>
                 <div class="item bot-5 sub-container">
                     <div class="sub-item bg-bot-5-1"></div>
                     <div class="sub-item bg-bot-5-2"></div>
                     <div class="sub-item bg-bot-5-3"></div>
                 </div>
-                <div class="item bot-6 bg-bot-6"></div>
+                <div class="item bot-6 bg-bot-6">
+                    <div class="content"><div style="font-size: 4rem; color: #fff; text-shadow: 0 0 25px rgba(255,0,0,1); font-weight: bold; line-height: 1;">X</div></div>
+                </div>
             </div>
 
         </div>
     </div>
 
+        <!-- MODAL REPRODUCTOR RETRO -->
+    <div id="retro-player-modal" class="retro-modal">
+        <div class="retro-modal-content">
+            <div class="retro-header">
+                <div class="header-left">
+                    <button id="global-play-pause" class="play-pause-btn-small" title="Pausa / Reproducir">▶</button>
+                    <h3>MUSIC PLAYER</h3>
+                </div>
+                <button id="close-player">X</button>
+            </div>
+            <ul class="retro-playlist">
+                <li data-target=".top-1">01. Me Dejo Llevar (Tengo que confiar)</li>
+                <li data-target=".top-2">02. ET</li>
+                <li data-target=".top-3">03. CHOP</li>
+                <li data-target=".top-4">04. VERDE</li>
+                <li data-target=".top-5">05. Hey Di EM</li>
+                <li data-target=".top-6">06. Mueres por Libertad</li>
+                <li data-target=".top-7">07. Ya No Hay Forma</li>
+            </ul>
+        </div>
+    </div>
     <script src="script.js"></script>
-</body>
+<div id="locked-popup" class="locked-popup">Canción aún no disponible, vuelva a intentarlo más tarde</div>`n</body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

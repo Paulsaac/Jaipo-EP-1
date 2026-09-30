@@ -1,4 +1,4 @@
-* {
+﻿* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -35,10 +35,10 @@ body {
     background-image: url('Photos/jaipo.png');
     background-position: center;
     background-repeat: no-repeat;
-    background-size: auto; /* Mantiene la resolución original */
+    background-size: auto; /* Mantiene la resoluciÃ³n original */
     opacity: 0.4; 
     filter: url(#water-effect) contrast(200%) saturate(120%) brightness(0.9) blur(1px);
-    transform: scale(1.1) translateZ(0); /* translateZ(0) fuerza la aceleración por tarjeta de video */
+    transform: scale(1.1) translateZ(0); /* translateZ(0) fuerza la aceleraciÃ³n por tarjeta de video */
     will-change: filter, transform; /* Le avisa al navegador que debe optimizar estos procesos */
     z-index: -1; 
     pointer-events: none;
@@ -87,7 +87,7 @@ body {
     transform-origin: center center;
 }
 
-/* Esta clase se añade por JS al hacer click en la terminal */
+/* Esta clase se aÃ±ade por JS al hacer click en la terminal */
 .crt-screen.turned-on {
     animation: tv-turn-on 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
@@ -99,14 +99,14 @@ body {
     100% { transform: scale(1, 1); filter: brightness(1) contrast(1); }
 }
 
-/* Animación inversa para apagar la terminal */
+/* AnimaciÃ³n inversa para apagar la terminal */
 .startup-screen.turning-off {
     animation: tv-turn-off 0.4s cubic-bezier(0.8, 0, 1, 1) forwards;
 }
 
 @keyframes tv-turn-off {
     0% { transform: scale(1, 1); filter: brightness(1); }
-    20% { transform: scale(1.05, 1.05); filter: brightness(2); } /* Pequeña anticipación */
+    20% { transform: scale(1.05, 1.05); filter: brightness(2); } /* PequeÃ±a anticipaciÃ³n */
     80% { transform: scale(0.01, 0.01); filter: brightness(10); } /* Se encoge a un punto */
     100% { transform: scale(0, 0); filter: brightness(10); } /* Desaparece */
 }
@@ -150,7 +150,7 @@ body {
 }
 
 /* ==================================================
-   GLITCHES Y ESTÁTICA
+   GLITCHES Y ESTÃTICA
    ================================================== */
 .glitch-effect-1 { animation: glitch-anim-1 0.15s ease-in-out; }
 .glitch-effect-2 { animation: glitch-anim-2 0.1s steps(2); }
@@ -230,21 +230,19 @@ body {
 .content {
     opacity: 0;
     position: absolute;
-    bottom: 25px;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, 30px);
+    transform: translate(-50%, calc(-50% + 20px));
     transition: all 0.5s ease;
     text-align: center;
-    background: rgba(0, 0, 0, 0.85);
-    padding: 15px 10px;
-    border-radius: 4px;
-    width: 85%;
-    backdrop-filter: blur(5px);
-    color: white;
+    background: transparent !important;
+    padding: 0;
+    width: 90%;
     pointer-events: none;
+    z-index: 5;
 }
-.bg-top-1 .content { background: rgba(255, 255, 255, 0.85); color: black; }
-.item.hovered .content { opacity: 1; transform: translate(-50%, 0); }
+.bg-top-1 .content { color: white; }
+.item.hovered.revealed .content, .sub-item.hovered.revealed .content { opacity: 1; transform: translate(-50%, -50%); }
 
 .content h2 { font-size: 1.2rem; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
 .content p { font-size: 0.85rem; opacity: 0.9; }
@@ -277,11 +275,395 @@ body {
 .bg-bot-5-3 { --bg-color: #0a0a0a; --bg-img: url('Photos/colorbar detail/Row 3/7-3.png'); }
 .bg-bot-6 { --bg-color: #151515; --bg-img: url('Photos/colorbar detail/Row 3/8-3.png'); }
 
-@media (max-width: 768px) {
-    .album-container { overflow-y: auto; height: auto; display: block; }
-    .row { flex-direction: column; height: auto; }
-    .row-top, .row-bot { flex: none; height: auto; }
-    .row-mid { display: none; }
-    .item { height: 150px; width: 100%; }
-    .sub-container { flex-direction: row; }
+
+
+/* Estado Activo: Canción Reproduciéndose */
+.item.playing::after, .sub-item.playing::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 3px solid #fff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.4);
+    pointer-events: none;
+    z-index: 5;
+    animation: pulse-border 2s infinite alternate;
 }
+.item.playing .content, .sub-item.playing .content { background: transparent !important; opacity: 1; transform: translate(-50%, -50%); }
+.item.playing .content h2, .sub-item.playing .content h2 {
+    color: #fffae6;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+@keyframes pulse-border {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* ==================================================
+   MECÁNICA DE REVELADO DE FOTOS
+   ================================================== */
+.item, .sub-item {
+    background-color: var(--bg-color, transparent);
+}
+.item::before, .sub-item::before {
+    background-color: transparent !important;
+    opacity: 0;
+    transition: transform 1s ease, opacity 0.5s ease !important;
+}
+.item.revealed::before, .sub-item.revealed::before {
+    opacity: 1;
+}
+
+
+/* ==================================================
+   REPRODUCTOR OLD WEB (WIN95 STYLE)
+   ================================================== */
+.retro-modal {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+}
+.retro-modal.active { opacity: 1; pointer-events: auto; }
+
+.retro-modal-content {
+    filter: invert(1);
+    background: #c0c0c0;
+    border-top: 2px solid #ffffff; border-left: 2px solid #ffffff;
+    border-right: 2px solid #000000; border-bottom: 2px solid #000000;
+    box-shadow: inset -1px -1px #dfdfdf, inset 1px 1px #808080, 2px 2px 5px rgba(0,0,0,0.5);
+    width: 90%; max-width: 450px;
+    padding: 3px;
+    color: #000;
+    font-family: 'Tahoma', 'Arial', sans-serif !important;
+    position: relative;
+}
+
+.retro-header { 
+    display: flex; justify-content: space-between; align-items: center;
+    background: #000080;
+    padding: 3px 3px 3px 5px; margin-bottom: 10px; 
+}
+.retro-header h3 { 
+    margin: 0; font-weight: bold; font-size: 0.95rem !important;
+    letter-spacing: 0 !important; color: #fff; text-shadow: none;
+    font-family: 'Tahoma', 'Arial', sans-serif !important;
+}
+.header-left {
+    display: flex; align-items: center; gap: 8px;
+}
+.play-pause-btn-small {
+    background: #c0c0c0;
+    border-top: 2px solid #fff; border-left: 2px solid #fff;
+    border-right: 2px solid #808080; border-bottom: 2px solid #808080;
+    color: #000;
+    font-size: 0.8rem; cursor: pointer; padding: 2px 6px;
+    display: flex; align-items: center; justify-content: center;
+    text-shadow: none !important;
+}
+.play-pause-btn-small:active {
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    transform: none !important;
+}
+.retro-header button#close-player { 
+    background: #c0c0c0; color: #000; 
+    border-top: 2px solid #fff; border-left: 2px solid #fff;
+    border-right: 2px solid #808080; border-bottom: 2px solid #808080;
+    font-weight: bold; font-family: 'Tahoma', sans-serif !important;
+    font-size: 0.8rem; display: flex; justify-content: center; align-items: center;
+    cursor: pointer; padding: 2px 6px; width: 22px; height: 20px;
+}
+.retro-header button#close-player:active { 
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+}
+
+.retro-playlist { 
+    list-style: none; padding: 0; margin: 0; 
+    background: #fff; 
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    height: auto; max-height: 250px; overflow-y: auto;
+}
+.retro-playlist li {
+    font-size: 0.9rem !important; padding: 4px 8px; 
+    border-bottom: none;
+    cursor: default; transition: none;
+    border-radius: 0; margin-bottom: 0;
+    letter-spacing: 0 !important; color: #000;
+    font-family: 'Tahoma', 'Arial', sans-serif !important;
+}
+.retro-playlist li:hover { 
+    background: #000080; color: #fff; padding-left: 8px;
+}
+.retro-playlist li.active-track { 
+    background: #000080; color: #fff; font-weight: normal;
+    box-shadow: none; border: 1px dotted #fff;
+}
+
+.player-controls {
+    display: flex; justify-content: center; margin-bottom: 10px;
+}
+.play-pause-btn {
+    background: #c0c0c0; color: #000;
+    border-top: 2px solid #fff; border-left: 2px solid #fff;
+    border-right: 2px solid #808080; border-bottom: 2px solid #808080;
+    border-radius: 0; padding: 6px 20px;
+    font-size: 0.9rem; cursor: pointer; transition: none;
+    font-family: 'Tahoma', 'Arial', sans-serif !important;
+    font-weight: normal !important;
+}
+.play-pause-btn:active {
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    transform: none !important;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.play-pause-btn-small {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, text-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+.play-pause-btn-small:hover {
+    transform: scale(1.1);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+.play-pause-btn-small:active {
+    transform: scale(0.9);
+}
+
+.retro-modal-content {
+    filter: invert(1);
+    font-family: 'VT323', monospace !important;
+}
+.retro-header h3 {
+    font-family: 'VT323', monospace !important;
+    font-size: 1.8rem !important;
+    letter-spacing: 2px !important;
+}
+.retro-playlist li {
+    font-family: 'VT323', monospace !important;
+    font-size: 1.4rem !important;
+}
+
+/* ==================================================
+   TIPOGRAFÍA GLOBAL
+   ================================================== */
+body, h1, h2, h3, p, a, div, span, li, button {
+    font-family: 'VT323', monospace !important;
+}
+.content h2 {
+    font-size: 2rem !important;
+    letter-spacing: 3px !important;
+}
+.content p {
+    font-size: 1.2rem !important;
+}
+.startup-message {
+    font-size: 1.8rem !important;
+    letter-spacing: 2px !important;
+}
+.startup-cursor {
+    font-size: 2rem !important;
+}
+
+
+
+
+.startup-screen.turning-on {
+    animation: tv-turn-on 0.4s forwards;
+}
+@keyframes tv-turn-on {
+    0% { transform: scale(0, 0); opacity: 0; }
+    50% { transform: scale(1, 0.01); opacity: 1; }
+    100% { transform: scale(1, 1); opacity: 1; }
+}
+
+.crt-screen.turning-off {
+    animation: tv-turn-off 0.4s forwards;
+}
+
+
+
+.content h2, .content p {
+    text-shadow: 
+        -1px -1px 0 #000,  
+         1px -1px 0 #000,
+        -1px  1px 0 #000,
+         1px  1px 0 #000,
+         0px 2px 10px rgba(0,0,0,0.9) !important;
+}
+
+@keyframes barrel-roll {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.do-barrel-roll {
+    animation: barrel-roll 1.5s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+}
+
+/* Asegurar que la X se vea en bot-6 sin necesidad de hover */
+.bot-6.show-x .content {
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+
+
+
+
+/* ==================================================
+   POPUP DE CANCIONES BLOQUEADAS
+   ================================================== */
+.locked-popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, 0);
+    background: rgba(200, 0, 0, 0.9);
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 4px;
+    font-size: 1.3rem;
+    font-family: 'VT323', monospace;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+    border: 1px solid #ff4444;
+    text-align: center;
+}
+
+@keyframes popup-float {
+    0% { opacity: 0; transform: translate(-50%, 20px); }
+    15% { opacity: 1; transform: translate(-50%, -10px); }
+    80% { opacity: 1; transform: translate(-50%, -50px); }
+    100% { opacity: 0; transform: translate(-50%, -70px); }
+}
+
+.locked-popup.show {
+    animation: popup-float 2.5s ease-out forwards;
+}
+
+/* ==================================================
+   OPTIMIZACION PARA CELULARES (MOBILE RESPONSIVE)
+   ================================================== */
+@media (max-width: 768px) {
+    /* 1. Comportamiento elástico agresivo en pantallas angostas */
+    /* Cuando se toca una barra, debe crecer mucho más para que se vea la foto y el texto */
+    .item.hovered, .sub-item.hovered { flex-grow: 1.5 !important; }
+    .startup-screen::before {
+        background-size: 100% auto !important; /* Más pequeño en el centro para móviles */
+        background-position: center !important;
+    }
+    .item.revealed, .sub-item.revealed { flex-grow: 2.5 !important; }
+    .item.playing, .sub-item.playing { flex-grow: 3.5 !important; }
+
+    /* 2. Reducir la tipografía gigante para que quepa en las barras verticales de un celular */
+    .content h2 { 
+        font-size: 1.2rem !important; 
+        letter-spacing: 1px !important; 
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 1px 5px rgba(0,0,0,0.9) !important;
+    }
+    .content p { font-size: 0.85rem !important; }
+    
+    /* Achicar íconos gigantes */
+    #grid-player-icon { font-size: 2.5rem !important; }
+    .bot-6 .content div { font-size: 2.5rem !important; } /* La X de emergencia */
+
+    /* 3. Ajustes de la Terminal de Recepción */
+    .startup-message { font-size: 1.2rem !important; letter-spacing: 1px !important; }
+    .click-prompt { font-size: 0.9rem !important; }
+    #water-offset { /* Reducir aún más la distorsión del agua en pantallas chicas */ }
+    
+    /* 4. Ajustes del Pop-up de Bloqueo */
+    .locked-popup { 
+        font-size: 1rem !important; 
+        padding: 10px 15px !important; 
+        width: 85%; /* Evita que se salga por los bordes */
+    }
+
+    /* 5. Ajustes del Reproductor Win95 */
+    .retro-modal-content { 
+        width: 95% !important; 
+        padding: 2px !important; 
+    }
+    .retro-header h3 { font-size: 0.85rem !important; }
+    .retro-playlist { height: auto !important; max-height: 40vh !important; }
+    .retro-playlist li { font-size: 0.85rem !important; padding: 10px 8px !important; }
+    .play-pause-btn { padding: 8px 20px !important; }
+    /* Centrar la grilla y hacerla más cuadrada en celular */    body {
+        display: block !important;
+    }
+    .crt-screen {
+        display: block !important;
+        position: absolute;
+        top: 0; left: 0;
+        width: 100vw;
+        height: 100vh;
+    }
+    .album-container {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100vw !important;
+        height: 100dvh !important; /* Usa height dinamico para celulares */
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        margin: 0 !important;
+    }
+
+    /* Solución radical al problema de pantalla negra: 
+       Los navegadores móviles Android colapsan con el scale(0,0) y los filtros extremos. 
+       Reemplazamos con una animación simple de opacidad y escala vertical */
+    /* Arreglar SVG en mobile */
+    #water-bg {
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+    }
+
+    /* Quitar completamente la animación en mobile para ver si el DOM se renderiza */
+    .crt-screen.turned-on {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        display: flex !important;
+    }
+}
+
+@keyframes tv-turn-on-mobile {
+    0% { transform: scaleY(0.01); opacity: 0; }
+    50% { transform: scaleY(0.01); opacity: 1; }
+    100% { transform: scaleY(1); opacity: 1; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
