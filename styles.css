@@ -199,7 +199,6 @@ body {
     z-index: 1;
 }
 
-.item.hovered { flex: 1.8; filter: brightness(1.15); }
 
 .sub-container { display: flex; flex-direction: row; padding: 0; }
 .sub-item { flex: 1; height: 100%; position: relative; overflow: hidden; z-index: 1; }
@@ -242,7 +241,8 @@ body {
     z-index: 5;
 }
 .bg-top-1 .content { color: white; }
-.item.hovered.revealed .content, .sub-item.hovered.revealed .content { opacity: 1; transform: translate(-50%, -50%); }
+.item.hovered.revealed > .content, .sub-item.hovered.revealed > .content { opacity: 1; transform: translate(-50%, -50%); }
+.item.revealed > .content, .sub-item.revealed > .content { pointer-events: auto !important; }
 
 .content h2 { font-size: 1.2rem; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
 .content p { font-size: 0.85rem; opacity: 0.9; }
@@ -251,45 +251,51 @@ body {
    VARIABLES DE COLORES
    ================================================== */
 .bg-top-1 { --bg-color: #d4d4d4; --bg-img: url('Photos/colorbar detail/Row 1/1-1.png'); }
-.bg-top-2 { --bg-color: #d1c000; --bg-img: url('Photos/colorbar detail/Row 1/2-1.png'); }
-.bg-top-3 { --bg-color: #00c3c3; --bg-img: url('Photos/colorbar detail/Row 1/3-1.png'); }
-.bg-top-4 { --bg-color: #1c901c; --bg-img: url('Photos/colorbar detail/Row 1/4-1.png'); }
-.bg-top-5 { --bg-color: #c400c4; --bg-img: url('Photos/colorbar detail/Row 1/5-1.png'); }
-.bg-top-6 { --bg-color: #d30000; --bg-img: url('Photos/colorbar detail/Row 1/6-1.png'); }
-.bg-top-7 { --bg-color: #0000d3; --bg-img: url('Photos/colorbar detail/Row 1/7-1.png'); }
+.bg-top-2 { --bg-color: #d1c000; --bg-img: url('Photos/colorbar detail/Row 1/1-2.png'); }
+.bg-top-3 { --bg-color: #00c3c3; --bg-img: url('Photos/colorbar detail/Row 1/1-3.png'); }
+.bg-top-4 { --bg-color: #1c901c; --bg-img: url('Photos/colorbar detail/Row 1/1-4.png'); }
+.bg-top-5 { --bg-color: #c400c4; --bg-img: url('Photos/colorbar detail/Row 1/1-5.png'); }
+.bg-top-6 { --bg-color: #d30000; --bg-img: url('Photos/colorbar detail/Row 1/1-6.png'); }
+.bg-top-7 { --bg-color: #0000d3; --bg-img: url('Photos/colorbar detail/Row 1/1-7.png'); }
 
-.bg-mid-1 { --bg-color: #0000a0; --bg-img: url('Photos/colorbar detail/Row 2/1-2.png'); }
+.bg-mid-1 { --bg-color: #0000a0; --bg-img: url('Photos/colorbar detail/Row 2/2-1.png'); }
 .bg-mid-2 { --bg-color: #222222; --bg-img: url('Photos/colorbar detail/Row 2/2-2.png'); }
-.bg-mid-3 { --bg-color: #c400c4; --bg-img: url('Photos/colorbar detail/Row 2/3-2.png'); }
-.bg-mid-4 { --bg-color: #111111; --bg-img: url('Photos/colorbar detail/Row 2/4-2.png'); }
-.bg-mid-5 { --bg-color: #00c3c3; --bg-img: url('Photos/colorbar detail/Row 2/5-2.png'); }
-.bg-mid-6 { --bg-color: #555555; --bg-img: url('Photos/colorbar detail/Row 2/6-2.png'); }
-.bg-mid-7 { --bg-color: #999999; --bg-img: url('Photos/colorbar detail/Row 2/7-2.png'); }
+.bg-mid-3 { --bg-color: #c400c4; --bg-img: url('Photos/colorbar detail/Row 2/2-3.png'); }
+.bg-mid-4 { --bg-color: #111111; --bg-img: url('Photos/colorbar detail/Row 2/2-4.png'); }
+.bg-mid-5 { --bg-color: #00c3c3; --bg-img: url('Photos/colorbar detail/Row 2/2-5.png'); }
+.bg-mid-6 { --bg-color: #555555; --bg-img: url('Photos/colorbar detail/Row 2/2-6.png'); }
+.bg-mid-7 { --bg-color: #999999; --bg-img: url('Photos/colorbar detail/Row 2/2-7.png'); }
 
-.bg-bot-1 { --bg-color: #1a4b8c; --bg-img: url('Photos/colorbar detail/Row 3/1-3.png'); }
-.bg-bot-2 { --bg-color: #e0e0e0; --bg-img: url('Photos/colorbar detail/Row 3/2-3.png'); }
+.bg-bot-1 { --bg-color: #1a4b8c; --bg-img: url('Photos/colorbar detail/Row 3/3-1.png'); }
+.bg-bot-2 { --bg-color: #e0e0e0; --bg-img: url('Photos/colorbar detail/Row 3/3-2.png'); }
 .bg-bot-3 { --bg-color: #3b0066; --bg-img: url('Photos/colorbar detail/Row 3/3-3.png'); }
-.bg-bot-4 { --bg-color: #1a1a1a; --bg-img: url('Photos/colorbar detail/Row 3/4-3.png'); }
-.bg-bot-5-1 { --bg-color: #151515; --bg-img: url('Photos/colorbar detail/Row 3/5-3.png'); }
-.bg-bot-5-2 { --bg-color: #4a4a4a; --bg-img: url('Photos/colorbar detail/Row 3/6-3.png'); }
-.bg-bot-5-3 { --bg-color: #0a0a0a; --bg-img: url('Photos/colorbar detail/Row 3/7-3.png'); }
-.bg-bot-6 { --bg-color: #151515; --bg-img: url('Photos/colorbar detail/Row 3/8-3.png'); }
+.bg-bot-4 { --bg-color: #1a1a1a; --bg-img: url('Photos/colorbar detail/Row 3/3-4.png'); }
+.bg-bot-5-1 { --bg-color: #151515; --bg-img: url('Photos/colorbar detail/Row 3/3-5.png'); }
+.bg-bot-5-2 { --bg-color: #4a4a4a; --bg-img: url('Photos/colorbar detail/Row 3/3-6.png'); }
+.bg-bot-5-3 { --bg-color: #0a0a0a; --bg-img: url('Photos/colorbar detail/Row 3/3-7.png'); }
+.bg-bot-6 { --bg-color: #151515; --bg-img: url('Photos/colorbar detail/Row 3/3-8.png'); }
 
 
 
 /* Estado Activo: Canción Reproduciéndose */
+.item.playing, .sub-item.playing {
+    z-index: 10;
+    transform: scale(var(--beat-scale, 1));
+    transition: transform 0.05s ease-out; /* suavizado rapido para los frames de audio */
+}
 .item.playing::after, .sub-item.playing::after {
     content: '';
     position: absolute;
     inset: 0;
-    border: 3px solid #fff;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.4);
-    pointer-events: none;
     z-index: 5;
-    animation: pulse-border 2s infinite alternate;
+    /* La animacion automatica se apaga porque ahora es controlada por la musica */
+    animation: none !important;
+    box-shadow: 0 0 var(--beat-glow, 15px) rgba(255, 255, 255, var(--beat-opacity, 0.8)), inset 0 0 20px rgba(255, 255, 255, 0.4);
+    transition: box-shadow 0.05s ease-out;
 }
-.item.playing .content, .sub-item.playing .content { background: transparent !important; opacity: 1; transform: translate(-50%, -50%); }
-.item.playing .content h2, .sub-item.playing .content h2 {
+.item.playing, .sub-item.playing { flex: 2; z-index: 10; }
+.item.playing > .content, .sub-item.playing > .content { background: transparent !important; opacity: 1; transform: translate(-50%, -50%); }
+.item.playing > .content h2, .sub-item.playing > .content h2 {
     color: #fffae6;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
@@ -309,6 +315,8 @@ body {
     opacity: 0;
     transition: transform 1s ease, opacity 0.5s ease !important;
 }
+.item.revealed, .sub-item.revealed { flex: 1.2; }
+.item.hovered, .sub-item.hovered { flex: 1.8; filter: brightness(1.15); z-index: 10; }
 .item.revealed::before, .sub-item.revealed::before {
     opacity: 1;
 }
@@ -327,7 +335,6 @@ body {
 .retro-modal.active { opacity: 1; pointer-events: auto; }
 
 .retro-modal-content {
-    filter: invert(1);
     background: #c0c0c0;
     border-top: 2px solid #ffffff; border-left: 2px solid #ffffff;
     border-right: 2px solid #000000; border-bottom: 2px solid #000000;
@@ -337,6 +344,15 @@ body {
     color: #000;
     font-family: 'Tahoma', 'Arial', sans-serif !important;
     position: relative;
+    /* Animacion de despliegue calculada */
+    transform: translate(var(--start-x, 40vw), var(--start-y, 0)) scale(0.01);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.4s ease;
+}
+
+.retro-modal.active .retro-modal-content {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
 }
 
 .retro-header { 
@@ -565,12 +581,13 @@ body, h1, h2, h3, p, a, div, span, li, button {
 @media (max-width: 768px) {
     /* 1. Comportamiento elástico agresivo en pantallas angostas */
     /* Cuando se toca una barra, debe crecer mucho más para que se vea la foto y el texto */
-    .item.hovered, .sub-item.hovered { flex-grow: 1.5 !important; }
+
     .startup-screen::before {
         background-size: 100% auto !important; /* Más pequeño en el centro para móviles */
         background-position: center !important;
     }
     .item.revealed, .sub-item.revealed { flex-grow: 2.5 !important; }
+    .item.hovered, .sub-item.hovered { flex-grow: 3.0 !important; }
     .item.playing, .sub-item.playing { flex-grow: 3.5 !important; }
 
     /* 2. Reducir la tipografía gigante para que quepa en las barras verticales de un celular */
@@ -639,19 +656,428 @@ body, h1, h2, h3, p, a, div, span, li, button {
     }
 
     /* Quitar completamente la animación en mobile para ver si el DOM se renderiza */
+    /* Hemos restaurado la animación de encendido en versión segura para móviles */
     .crt-screen.turned-on {
-        animation: none !important;
-        opacity: 1 !important;
-        transform: none !important;
-        filter: none !important;
+        animation: tv-turn-on-mobile 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards !important;
         display: flex !important;
     }
 }
 
 @keyframes tv-turn-on-mobile {
-    0% { transform: scaleY(0.01); opacity: 0; }
-    50% { transform: scaleY(0.01); opacity: 1; }
-    100% { transform: scaleY(1); opacity: 1; }
+    0% { transform: scale(0.01, 0.01); filter: brightness(5) contrast(2); opacity: 0; }
+    50% { transform: scale(1, 0.02); filter: brightness(3) contrast(1.5); opacity: 1; }
+    100% { transform: scale(1, 1); filter: brightness(1) contrast(1); opacity: 1; }
+}
+
+
+
+
+
+/* ==================================================
+   KILL SWITCH STYLIZED X (3-8)
+   ================================================== */
+.stylized-x {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    pointer-events: none;
+    font-size: 3.5rem;
+    font-family: 'VT323', monospace;
+    font-weight: bold;
+    background: repeating-linear-gradient(0deg, #ffffff, #ffffff 4px, #cccccc 5px, #cccccc 8px);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+    line-height: 1;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    display: inline-block;
+}
+
+.item.show-x .stylized-x {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+/* El stage-2 (Segundo Clic de la X) */
+.bot-6.stage-2 .stylized-x {
+    background: repeating-linear-gradient(0deg, #00ff00, #00ff00 4px, #00aa00 5px, #00aa00 8px);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: 
+        barrelRoll-x 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+        breathing-x-green 1s ease-in-out 0.5s infinite alternate !important;
+}
+
+@keyframes barrelRoll-x {
+    0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); }
+    100% { transform: translate(-50%, -50%) rotate(360deg) scale(1.1); filter: drop-shadow(0 0 15px rgba(0,255,0,0.8)); }
+}
+
+@keyframes breathing-x-green {
+    0% { filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.8)); transform: translate(-50%, -50%) scale(1.1); }
+    100% { filter: drop-shadow(0 0 40px rgba(0, 255, 0, 1)); transform: translate(-50%, -50%) scale(1.3); }
+}
+
+/* UTILIDAD GLOBAL PARA TEXTOS RETRO HUD (BLANCO) */
+.retro-hud-text-white {
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    background: repeating-linear-gradient(0deg, #ffffff, #ffffff 2px, #cccccc 3px, #cccccc 4px);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+    display: inline-block;
+}
+
+/* UTILIDAD GLOBAL PARA TEXTOS RETRO HUD */
+.retro-hud-text {
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    background: repeating-linear-gradient(0deg, #00ff00, #00ff00 2px, #00aa00 3px, #00aa00 4px);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.8));
+    display: inline-block;
+}
+
+
+
+/* ==================================================
+   VOLUME SLIDER (2-6)
+   ================================================== */
+#global-volume-slider {
+    pointer-events: auto !important;
+    -webkit-appearance: none;
+    background: transparent;
+    outline: none;
+}
+#global-volume-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #fff;
+}
+#global-volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 24px;
+    width: 12px;
+    background: #c0c0c0;
+    border-top: 2px solid #fff;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #000;
+    border-right: 2px solid #000;
+    margin-top: -9px;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+
+/* ==================================================
+   TOP AUDIO PROGRESS BAR
+   ================================================== */
+#top-progress-bar-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 25px;
+    background: rgba(0, 0, 0, 0.7);
+    border-bottom: 2px solid #555;
+    z-index: 100000;
+    transform: translateY(-100%);
+    transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Área de colisión extendida para el hover (así detecta el mouse antes de tocar el borde) */
+#top-progress-bar-container::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: 0; width: 100%; height: 30px;
+    background: transparent;
+}
+
+#top-progress-bar-container:hover {
+    transform: translateY(0);
+}
+
+#top-progress-fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #1a4b8c, #00ffff);
+    transition: width 0.1s linear;
+}
+
+#top-progress-time {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-family: 'Tahoma', 'Arial', sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #000;
+    pointer-events: none;
+    letter-spacing: 2px;
+}
+
+/* ==================================================
+   WAVE UP ANIMATION (EASTER EGG 3-6)
+   ================================================== */
+@keyframes wave-up {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-50px); box-shadow: 0 50px 20px rgba(0,0,0,0.5); z-index: 100; }
+    100% { transform: translateY(0); }
+}
+.wave-up {
+    animation: wave-up 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+}
+
+/* ==================================================
+   CRT VOLUME OVERLAY (FLOATING OVER ROW 3)
+   ================================================== */
+#crt-volume-container {
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%; /* Ligeramente más reducido */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: transparent;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+}
+#crt-volume-container.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+.vol-label {
+    font-family: 'Arial', sans-serif;
+    font-size: 3rem;
+    font-weight: bold;
+    text-transform: capitalize;
+    letter-spacing: -2px;
+    background: repeating-linear-gradient(0deg, #00ff00, #00ff00 2px, #00aa00 3px, #00aa00 4px);
+    -webkit-background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.8));
+}
+#vol-bars-display {
+    display: flex;
+    align-items: center;
+    gap: 3px; /* Espacio mínimo para que se vean divididos pero juntos */
+    height: 45px;
+    pointer-events: none;
+    flex-grow: 1;
+}
+.vol-block {
+    flex: 1;
+    height: 100%;
+    background: repeating-linear-gradient(0deg, #00ff00, #00ff00 2px, #005500 3px, #005500 4px);
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+}
+.vol-dot {
+    flex: 1;
+    height: 30%; /* Cuadrados pequeños */
+    border-radius: 0; /* Totalmente cuadrados, sin bordes redondeados */
+    background: repeating-linear-gradient(0deg, #00ff00, #00ff00 2px, #005500 3px, #005500 4px);
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.6);
+}
+#global-volume-slider {
+    position: absolute;
+    right: 0;
+    width: calc(100% - 140px);
+    height: 40px;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+
+
+
+
+
+/* ==================================================
+   CRT CHANNEL INDICATOR
+   ================================================== */
+#crt-channel-indicator {
+    position: fixed;
+    top: 5vh;
+    right: 5vw;
+    left: auto;
+    font-family: 'Arial', sans-serif;
+    font-size: 3.5rem;
+    font-weight: bold;
+    letter-spacing: -2px;
+    background: repeating-linear-gradient(0deg, #00ff00, #00ff00 2px, #00aa00 3px, #00aa00 4px);
+    -webkit-background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.8));
+    z-index: 100000;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* ==================================================
+   REAL GENERATED STATIC SCREEN (CANVAS)
+   ================================================== */
+#channel-04-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 50000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s linear;
+}
+#channel-04-canvas.active {
+    opacity: 1;
+    pointer-events: auto;
+    /* Un ligero parpadeo para darle más realismo de tubo CRT */
+    animation: crt-flicker 0.1s infinite alternate;
+}
+
+@keyframes crt-flicker {
+    0% { filter: brightness(1) contrast(1.2); }
+    100% { filter: brightness(0.9) contrast(1.4); }
+}
+
+/* Modificamos el indicador de canal para que sea interactivo */
+#crt-channel-indicator {
+    pointer-events: auto !important;
+    cursor: pointer;
+}
+
+
+
+/* ==================================================
+   CH 03: RPG ANIMATION (SNES)
+   ================================================== */
+#channel-03-rpg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 50000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s linear;
+    background-color: #000;
+    overflow: hidden;
+}
+#channel-03-rpg.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Fondo de Mapa Dark Fantasy 16-bits (Abstracto y Amplio) */
+.rpg-bg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-image: url('Photos/rpg-dark-map-v2.jpg');
+    background-size: cover;
+    background-position: center 0%;
+    image-rendering: pixelated;
+    animation: rpg-pan-vertical 40s linear infinite alternate;
+    filter: brightness(0.9) contrast(1.1);
+}
+@keyframes rpg-pan-vertical {
+    0% { background-position: center 0%; }
+    100% { background-position: center 100%; }
+}
+
+.press-start {
+    position: absolute;
+    bottom: 25vh;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Press Start 2P', monospace;
+    color: #fff;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: 3px 3px 0 #000;
+    animation: press-start-blink 1.2s steps(2, start) infinite;
+    pointer-events: none;
+}
+
+@keyframes press-start-blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Caja de dialogo clasica Final Fantasy / Dragon Quest */
+.rpg-dialog {
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 180px;
+    background: linear-gradient(180deg, #000088, #000033);
+    border: 6px solid #fff;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 0 0 4px #000, inset 0 0 0 4px #000;
+    display: flex;
+    flex-direction: column;
+}
+.rpg-dialog p {
+    font-family: 'Press Start 2P', monospace;
+    color: #fff;
+    font-size: 1.2rem;
+    line-height: 2rem;
+    text-shadow: 2px 2px 0 #000;
+    margin: 0;
+    white-space: pre-wrap; /* Respeta los saltos de linea */
+}
+.rpg-cursor {
+    font-family: 'Press Start 2P', monospace;
+    color: #fff;
+    font-size: 1.5rem;
+    align-self: flex-end;
+    margin-top: auto;
+    animation: rpg-bounce 0.5s infinite alternate;
+}
+@keyframes rpg-bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(10px); }
+}
+
+.rpg-character {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10rem;
+    filter: drop-shadow(8px 8px 0 #000);
+    animation: rpg-float 2s ease-in-out infinite alternate;
+    image-rendering: pixelated;
+}
+@keyframes rpg-float {
+    0% { transform: translate(-50%, -40%); }
+    100% { transform: translate(-50%, -60%); }
 }
 
 
@@ -663,6 +1089,26 @@ body, h1, h2, h3, p, a, div, span, li, button {
 
 
 
+
+
+
+
+@media (max-width: 768px) {
+    /* Ajustes específicos para el Overlay de Volumen en Móvil */
+    #crt-volume-container {
+        bottom: 22vh !important; /* Levantar la barra significativamente para que quede en la Fila 3 y esquive la interfaz del navegador */
+        width: 95vw !important; /* Aprovechar todo el ancho para que quepan las 50 rayitas */
+        flex-direction: column !important; /* Etiqueta arriba, rayitas abajo */
+        gap: 5px !important;
+    }
+    .vol-label {
+        font-size: 2.2rem !important;
+    }
+    #vol-bars-display {
+        width: 100% !important;
+        height: 35px !important;
+    }
+}
 
 
 

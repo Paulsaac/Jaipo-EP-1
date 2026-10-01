@@ -34,7 +34,19 @@
     <!-- Contenedor que simula la pantalla CRT -->
     <div class="crt-screen">
         <div class="static-overlay"></div>
+        <div id="crt-channel-indicator">CH 05</div>
+        <canvas id="channel-04-canvas"></canvas>
+        <div id="channel-03-rpg">
+            <div class="rpg-bg"></div>
+            <div class="press-start">Press start to play</div>
+        </div>
         
+        
+        <div id="crt-volume-container">
+            <span class="vol-label">Volume</span>
+            <div id="vol-bars-display"></div>
+            <input type="range" id="global-volume-slider" min="0" max="1" step="0.05" value="0.75">
+        </div>
         <div class="album-container">
             
             <!-- FILA SUPERIOR -->
@@ -64,20 +76,27 @@
 
             <!-- FILA MEDIA -->
             <div class="row row-mid">
-                <div class="item mid-1 bg-mid-1" id="play-pause-trigger" data-index="1">
-                    <div class="content"><div id="grid-player-icon" style="font-size: 4rem; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.8);">&#9654;</div></div>
-                </div>
+                <div class="item mid-1 bg-mid-1" data-index="1"></div>
                 <div class="item mid-2 bg-mid-2" data-index="2"></div>
-                <div class="item mid-3 bg-mid-3" data-index="3" data-url="https://www.instagram.com/jaipo.oficial/">
-                    <div class="content"><h2>INSTAGRAM</h2><p>@jaipo.oficial</p></div>
+                <div class="item mid-3 bg-mid-3" data-index="3">
                 </div>
-                <div class="item mid-4 bg-mid-4" data-index="4"></div>
-                <div class="item mid-5 bg-mid-5" id="barrel-trigger" data-index="5">
-                    <div class="content"><h2 style="font-size: 3rem; margin:0;">?</h2></div>
+                <div class="item mid-4 bg-mid-4" id="play-pause-trigger" data-index="4">
+                    <div class="content"><div id="grid-player-icon" class="retro-hud-text-white" style="font-size: 5rem; cursor: pointer;">&#9654;&#xFE0E;</div></div>
                 </div>
-                <div class="item mid-6 bg-mid-6" data-index="6"></div>
+                <div class="item mid-5 bg-mid-5" id="volume-trigger" data-index="5">
+                    <div class="content"></div>
+                </div>
+                <div class="item mid-6 bg-mid-6" data-index="6">
+                    <div class="content" style="width: 100%; padding: 0 10%;">
+                        <div id="grid-progress-container" style="width: 100%; height: 20px; background: rgba(0,0,0,0.5); border: 2px solid #00ff00; position: relative; cursor: pointer; box-shadow: 0 0 10px rgba(0,255,0,0.3);">
+                            <div id="grid-progress-fill" style="width: 0%; height: 100%; background: repeating-linear-gradient(0deg, #00ff00, #00ff00 2px, #005500 3px, #005500 4px); pointer-events: none; box-shadow: 0 0 8px rgba(0,255,0,0.8);"></div>
+                            <input type="range" id="grid-progress-slider" min="0" max="100" step="0.1" value="0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 5;">
+                        </div>
+                        <div id="grid-progress-time" class="retro-hud-text" style="margin-top: 15px;">0:00 / 0:00</div>
+                    </div>
+                </div>
                 <div class="item mid-7 bg-mid-7" id="player-trigger" data-index="7">
-                    <div class="content"><h2>PLAYLIST</h2><p>Abrir Reproductor</p></div>
+                    <div class="content"><h2>PLAYLIST</h2></div>
                 </div>
             </div>
 
@@ -86,20 +105,22 @@
                 <div class="item bot-1 bg-bot-1" data-url="https://www.youtube.com/channel/UCpwOXlKG6v7CW-PJ4bOoIBQ">
                     <div class="content"><h2>YOUTUBE</h2><p>Canal Oficial</p></div>
                 </div>
-                <div class="item bot-2 bg-bot-2" data-url="mailto:jaipo.oficial@gmail.com">
-                    <div class="content"><h2>CONTACTO</h2><p>jaipo.oficial@gmail.com</p></div>
+                <div class="item bot-2 bg-bot-2" data-url="https://www.instagram.com/jaipo.oficial/">
+                    <div class="content"><h2>INSTAGRAM</h2><p>@jaipo.oficial</p></div>
                 </div>
                 <div class="item bot-3 bg-bot-3" data-url="https://open.spotify.com/intl-es/artist/2IlT5vNSIM8yz2UVTRm3kR">
                     <div class="content"><h2>SPOTIFY</h2><p>Jaipo</p></div>
                 </div>
-                <div class="item bot-4 bg-bot-4"></div>
+                <div class="item bot-4 bg-bot-4" data-url="mailto:jaipo.oficial@gmail.com">
+                    <div class="content"><h2>CONTACTO</h2><p>jaipo.oficial@gmail.com</p></div>
+                </div>
                 <div class="item bot-5 sub-container">
                     <div class="sub-item bg-bot-5-1"></div>
-                    <div class="sub-item bg-bot-5-2"></div>
-                    <div class="sub-item bg-bot-5-3"></div>
+                    <div class="sub-item bg-bot-5-2 barrel-trigger"><div class="content"><h2 style="font-size: 3rem; margin:0;">?</h2></div></div>
+                    <div class="sub-item bg-bot-5-3" id="reveal-all-trigger"><div class="content"><div class="retro-hud-text-white" style="font-size: 2.5rem; margin:0; letter-spacing: 2px; text-transform: uppercase;">Exp.</div></div></div>
                 </div>
                 <div class="item bot-6 bg-bot-6">
-                    <div class="content"><div style="font-size: 4rem; color: #fff; text-shadow: 0 0 25px rgba(255,0,0,1); font-weight: bold; line-height: 1;">X</div></div>
+                    <div class="content"><div class="stylized-x">&#10006;&#xFE0E;</div></div>
                 </div>
             </div>
 
@@ -112,7 +133,7 @@
             <div class="retro-header">
                 <div class="header-left">
                     <button id="global-play-pause" class="play-pause-btn-small" title="Pausa / Reproducir">▶</button>
-                    <h3>MUSIC PLAYER</h3>
+                    <h3>Playlist actual: </h3>
                 </div>
                 <button id="close-player">X</button>
             </div>
@@ -130,6 +151,41 @@
     <script src="script.js"></script>
 <div id="locked-popup" class="locked-popup">Canción aún no disponible, vuelva a intentarlo más tarde</div>`n</body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

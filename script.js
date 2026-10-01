@@ -1,4 +1,7 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
+    let currentAudio = null;
+    let currentlyPlayingItem = null;
+    let barrelClicks = 0;
     let rebootState = 0; // 0=oculto, 1=revelado, 2=limpio
 
     
@@ -7,6 +10,80 @@
     // ==================================================
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioCtx = new AudioContext();
+
+    // ==================================================
+    // ANALIZADOR DE FRECUENCIAS (REACTIVIDAD MUSICAL)
+    // ==================================================
+    const analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    let reactiveNodeAttached = false;
+    let lastGlitchTime = 0;
+
+    function loopAudioReactions() {
+        requestAnimationFrame(loopAudioReactions);
+        if (!currentAudio || currentAudio.paused) return;
+
+        analyser.getByteFrequencyData(dataArray);
+
+        // Calcular promedios de graves (Kicks/Bass) (índices 0 a 10 de 128)
+        let bassSum = 0;
+        for (let i = 0; i < 10; i++) {
+            bassSum += dataArray[i];
+        }
+        const bassAvg = bassSum / 10; // Valor entre 0 y 255
+
+        if (currentlyPlayingItem) {
+            // OPCIÓN 1: Latido al Ritmo (Pulse)
+            // Mapear el bajo (0-255) a una escala visual y brillo
+            const scale = 1 + (bassAvg / 255) * 0.08; // Hasta 1.08x de tamaño
+            const glow = (bassAvg / 255) * 60; // Hasta 60px de resplandor
+            const opacity = 0.5 + (bassAvg / 255) * 0.5;
+
+            currentlyPlayingItem.style.setProperty('--beat-scale', scale);
+            currentlyPlayingItem.style.setProperty('--beat-glow', glow + 'px');
+            currentlyPlayingItem.style.setProperty('--beat-opacity', opacity);
+        }
+
+        // ACTUALIZACIÓN DE BARRA DE DURACIÓN EN GRID
+        const progressFill = document.getElementById('grid-progress-fill');
+        const progressTime = document.getElementById('grid-progress-time');
+        const progressSlider = document.getElementById('grid-progress-slider');
+        
+        if (progressFill && progressTime && currentAudio && !isNaN(currentAudio.duration) && currentAudio.duration > 0) {
+            const percent = (currentAudio.currentTime / currentAudio.duration) * 100;
+            
+            // Solo actualizamos la barra visual si el usuario NO la esta arrastrando
+            if (!progressSlider || progressSlider.dataset.dragging !== 'true') {
+                progressFill.style.width = percent + '%';
+                if (progressSlider) progressSlider.value = percent;
+            }
+            
+            const formatTime = (time) => {
+                const mins = Math.floor(time / 60);
+                const secs = Math.floor(time % 60).toString().padStart(2, '0');
+                return mins + ':' + secs;
+            };
+            progressTime.innerText = formatTime(currentAudio.currentTime) + ' / ' + formatTime(currentAudio.duration);
+        }
+
+        // OPCIÓN 3: Glitch Reactivo
+        // Si el bajo supera un umbral muy alto (golpe fuerte) y pasó medio segundo desde el último
+        if (bassAvg > 240 && Date.now() - lastGlitchTime > 500) {
+            lastGlitchTime = Date.now();
+            triggerGlitch();
+        }
+    }
+    loopAudioReactions(); // Iniciar el bucle infinito
+
+    function setupAudioNode(audioElement) {
+        // En Firefox/Chrome, crearMediaElementSource solo se puede hacer una vez por elemento HTMLMediaElement.
+        // Como creamos un 'new Audio()' cada vez, está bien hacerlo por cada nuevo track.
+        const source = audioCtx.createMediaElementSource(audioElement);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+    }
 
     function playHoverSound() {
         if (audioCtx.state === 'suspended') {
@@ -34,24 +111,21 @@
 
     // Hover independiente para cada elemento y sonido
     const allItems = document.querySelectorAll('.item, .sub-item');
-    
-    let currentAudio = null;
-    let currentlyPlayingItem = null;
 
     allItems.forEach(el => {
         // Evento de hover y sonido analÃ³gico
-        el.addEventListener('mouseenter', () => {
+        el.addEventListener('mouseenter', (e) => { e.stopPropagation();
             if (el.classList.contains('no-react')) return;
             el.classList.add('hovered');
             playHoverSound();
         });
-        el.addEventListener('mouseleave', () => {
+        el.addEventListener('mouseleave', (e) => { e.stopPropagation();
             if (el.classList.contains('no-react')) return;
             el.classList.remove('hovered');
         });
 
         // Evento de clic para reproducir canciones
-        el.addEventListener('click', (e) => {
+        el.addEventListener('click', (e) => { e.stopPropagation();
             if (el.classList.contains('no-react')) return;
             
             // --- VERIFICAR FECHA DE DESBLOQUEO ---
@@ -77,7 +151,7 @@
             if (typeof rebootState !== 'undefined') {
                 rebootState = 0;
                 const rBtn = document.querySelector('.bot-6');
-                if (rBtn) rBtn.classList.remove('show-x');
+                if (rBtn) { rBtn.classList.remove('show-x'); rBtn.classList.remove('stage-2'); }
             }
             
             const isRevealed = el.classList.contains('revealed');
@@ -87,6 +161,17 @@
                 el.classList.add('revealed');
                 if (externalUrl) e.preventDefault();
             } else {
+                // EXCEPCIÓN PARA BOT-5-3 (EXP. - Reveal All)
+                if (el.id === 'reveal-all-trigger') {
+                    document.querySelectorAll('.item, .sub-item').forEach(item => {
+                        if (!item.classList.contains('revealed')) {
+                            item.classList.add('revealed');
+                        }
+                    });
+                    triggerGlitch();
+                    return;
+                }
+
                 if (externalUrl) {
                     e.preventDefault();
                     window.open(externalUrl, '_blank');
@@ -94,7 +179,23 @@
                 }
                 if (el.id === 'player-trigger') {
                     const playerModal = document.getElementById('retro-player-modal');
-                    if (playerModal) playerModal.classList.add('active');
+                    if (playerModal) {
+                        // Calcular posicin exacta del cuadro para animacin
+                        const modalContent = playerModal.querySelector('.retro-modal-content');
+                        const rect = el.getBoundingClientRect();
+                        const startX = rect.left + rect.width / 2 - window.innerWidth / 2;
+                        const startY = rect.top + rect.height / 2 - window.innerHeight / 2;
+                        
+                        if (modalContent) {
+                            modalContent.style.setProperty('--start-x', startX + 'px');
+                            modalContent.style.setProperty('--start-y', startY + 'px');
+                        }
+                        
+                        // Forzar repintado
+                        void playerModal.offsetWidth;
+                        
+                        playerModal.classList.add('active');
+                    }
                     return;
                 }
                 
@@ -104,15 +205,57 @@
                     return;
                 }
                 
-                if (el.id === 'barrel-trigger') {
-                    document.body.classList.add('do-barrel-roll');
-                    setTimeout(() => {
-                        document.body.classList.remove('do-barrel-roll');
-                    }, 1500);
+
+
+                if (el.id === 'barrel-trigger' || el.classList.contains('barrel-trigger')) {
+                    barrelClicks++;
+                    
+                    const clickStage = barrelClicks % 5;
+
+                    const getRow1 = () => Array.from(document.querySelectorAll('.row-top .item'));
+                    const getRow2 = () => Array.from(document.querySelectorAll('.row-mid .item'));
+                    const getRow3 = () => Array.from(document.querySelectorAll('.row-bot .item:not(.sub-container), .row-bot .sub-item'));
+
+                    const animateWave = (elements, reverse = false) => {
+                        let arr = elements;
+                        if (reverse) arr = arr.slice().reverse();
+                        arr.forEach((box, index) => {
+                            setTimeout(() => {
+                                box.classList.add('hovered');
+                                setTimeout(() => box.classList.remove('hovered'), 400);
+                            }, index * 100);
+                        });
+                    };
+
+                    if (clickStage === 1) {
+                        animateWave(getRow1(), false);
+                    } else if (clickStage === 2) {
+                        animateWave(getRow2(), true);
+                    } else if (clickStage === 3) {
+                        animateWave(getRow3(), false);
+                    } else if (clickStage === 4) {
+                        animateWave(getRow1(), false);
+                        animateWave(getRow2(), true);
+                        animateWave(getRow3(), false);
+                    } else if (clickStage === 0) {
+                        document.body.classList.add('do-barrel-roll');
+                        setTimeout(() => {
+                            document.body.classList.remove('do-barrel-roll');
+                        }, 1500);
+                    }
                     return;
                 }
             }
             
+                        // volume-trigger es una excepción: debe desplegarse simultáneamente con la revelación (primer clic)
+            if (el.id === 'volume-trigger') {
+                const volContainer = document.getElementById('crt-volume-container');
+                if (volContainer) {
+                    volContainer.classList.toggle('show');
+                }
+                return; // Ahora podemos hacer return porque isRevealed ya se procesó al principio del listener
+            }
+
             const audioSrc = el.getAttribute('data-audio');
             
             if (audioSrc) {
@@ -123,7 +266,7 @@
                     currentAudio.pause();
                     el.classList.remove('playing');
                     const globalBtn = document.getElementById('global-play-pause');
-                    if (globalBtn) globalBtn.innerHTML = '&#9654;'; const gridBtn = document.getElementById('grid-player-icon'); if (gridBtn) gridBtn.innerHTML = '&#9654;';
+                    if (globalBtn) globalBtn.innerHTML = '&#9654;'; const gridBtn = document.getElementById('grid-player-icon'); if (gridBtn) gridBtn.innerHTML = '&#9654;&#xFE0E;';
                     return;
                 }
 
@@ -137,6 +280,10 @@
 
                 // Reproducir la nueva canciÃ³n
                 currentAudio = new Audio(audioSrc);
+                currentAudio.crossOrigin = 'anonymous';
+                const vSlider = document.getElementById('global-volume-slider');
+                currentAudio.volume = vSlider ? parseFloat(vSlider.value) : 0.75;
+                setupAudioNode(currentAudio);
                 currentAudio.play();
                 currentlyPlayingItem = el;
                 const globalBtn = document.getElementById('global-play-pause');
@@ -144,11 +291,27 @@
                 el.classList.add('playing');
                 
                 // Quitar la clase cuando termine la canciÃ³n
+                                // Quitar la clase y reproducir la siguiente al terminar
                 currentAudio.addEventListener('ended', () => {
                     el.classList.remove('playing');
                     currentlyPlayingItem = null;
                     const globalBtn = document.getElementById('global-play-pause');
-                    if (globalBtn) globalBtn.innerHTML = '&#9654;'; const gridBtn = document.getElementById('grid-player-icon'); if (gridBtn) gridBtn.innerHTML = '&#9654;';
+                    if (globalBtn) globalBtn.innerHTML = '&#9654;'; 
+                    const gridBtn = document.getElementById('grid-player-icon'); 
+                    if (gridBtn) gridBtn.innerHTML = '&#9654;&#xFE0E;';
+                    
+                    // AUTOPLAY: Seleccionar y reproducir siguiente pista aleatoria
+                    const allMusicItems = Array.from(document.querySelectorAll('.item[data-audio], .sub-item[data-audio]'));
+                    if (allMusicItems.length > 0) {
+                        const nextOptions = allMusicItems.filter(item => item !== el);
+                        const pool = nextOptions.length > 0 ? nextOptions : allMusicItems;
+                        const randomIndex = Math.floor(Math.random() * pool.length);
+                        const nextItem = pool[randomIndex];
+                        
+                        setTimeout(() => {
+                            nextItem.click();
+                        }, 500);
+                    }
                 });
             }
         });
@@ -310,7 +473,7 @@
                     if (currentlyPlayingItem) currentlyPlayingItem.classList.add('playing');
                 } else {
                     currentAudio.pause();
-                    globalPlayPauseBtn.innerHTML = '&#9654;'; const gridBtn = document.getElementById('grid-player-icon'); if (gridBtn) gridBtn.innerHTML = '&#9654;';
+                    globalPlayPauseBtn.innerHTML = '&#9654;'; const gridBtn = document.getElementById('grid-player-icon'); if (gridBtn) gridBtn.innerHTML = '&#9654;&#xFE0E;';
                     if (currentlyPlayingItem) currentlyPlayingItem.classList.remove('playing');
                 }
             } else {
@@ -330,36 +493,38 @@
         rebootBtn.classList.add('no-react');
         rebootBtn.style.cursor = 'pointer';
 
-        rebootBtn.addEventListener('click', () => {
+                rebootBtn.addEventListener('click', () => {
             if (rebootState === 0) {
-                // PRIMER CLIC: Solo revelar su propia foto
+                // PRIMER CLIC: Revelar foto Y mostrar la X roja inmediatamente
                 rebootBtn.classList.add('revealed');
+                rebootBtn.classList.add('show-x');
                 rebootState = 1;
                 
             } else if (rebootState === 1) {
-                // SEGUNDO CLIC: Pausar música y ocultar todas las DEMAÁ imágenes
+                // SEGUNDO CLIC: Pausar musica, ocultar demas imagenes, y hacer Barrel Roll (cambio de color) a la X
                 if (currentAudio && !currentAudio.paused) {
                     currentAudio.pause();
                 }
                 const globalBtn = document.getElementById('global-play-pause');
-                if (globalBtn) globalBtn.innerHTML = '&#9654;'; const gridBtn = document.getElementById('grid-player-icon'); if (gridBtn) gridBtn.innerHTML = '&#9654;';
+                if (globalBtn) globalBtn.innerHTML = '&#9654;'; const gridBtn = document.getElementById('grid-player-icon'); if (gridBtn) gridBtn.innerHTML = '&#9654;&#xFE0E;';
                 
                 if (currentlyPlayingItem) {
                     currentlyPlayingItem.classList.remove('playing');
                     currentlyPlayingItem = null;
                 }
                 
-                // Ocultar todas las imágenes reveladas EXCEPTO el botón de reinicio
+                // Ocultar todas las imagenes reveladas EXCEPTO el boton de reinicio
                 document.querySelectorAll('.revealed').forEach(el => {
                     if (el !== rebootBtn) el.classList.remove('revealed');
                 });
                 
-                rebootBtn.classList.add('show-x');
+                // Activar la nueva etapa (animacion barrel roll y cyan)
+                rebootBtn.classList.add('stage-2');
                 
                 rebootState = 2;
                 
             } else if (rebootState === 2) {
-                // TERCER CLIC: Reiniciar página (volver a la terminal)
+                // TERCER CLIC: Reiniciar pagina (volver a la terminal)
                 rebootState = 0;
                 
                 // Salir de pantalla completa (Compatible con iOS/Safari móvil)
@@ -376,6 +541,7 @@
                 // Remover revelado de sí mismo para el siguiente ciclo
                 rebootBtn.classList.remove('revealed');
                 rebootBtn.classList.remove('show-x');
+                rebootBtn.classList.remove('stage-2');
                 
                 // Cerrar modal si estaba abierto
                 const playerModal = document.getElementById('retro-player-modal');
@@ -402,26 +568,117 @@
             }
         });
     }
+    // Control de barra de progreso interactivo (Click + Drag)
+    const durationSlider = document.getElementById('grid-progress-slider');
+    const gridProgressFill = document.getElementById('grid-progress-fill');
+    
+    if (durationSlider) {
+        durationSlider.addEventListener('click', (e) => e.stopPropagation());
+        durationSlider.addEventListener('mousedown', () => { durationSlider.dataset.dragging = 'true'; });
+        durationSlider.addEventListener('touchstart', () => { durationSlider.dataset.dragging = 'true'; }, {passive: true});
+        
+        durationSlider.addEventListener('input', (e) => {
+            if (gridProgressFill) gridProgressFill.style.width = e.target.value + '%';
+        });
+
+        const applySeek = (e) => {
+            durationSlider.dataset.dragging = 'false';
+            if (currentAudio && !isNaN(currentAudio.duration) && currentAudio.duration > 0) {
+                currentAudio.currentTime = (parseFloat(e.target.value) / 100) * currentAudio.duration;
+            }
+        };
+        durationSlider.addEventListener('mouseup', applySeek);
+        durationSlider.addEventListener('touchend', applySeek);
+    }
+
+    // Funcionalidad CRT Volume Overlay
+    const renderVolumeBars = (val) => {
+        const barsContainer = document.getElementById('vol-bars-display');
+        if (!barsContainer) return;
+        barsContainer.innerHTML = '';
+        const totalBars = 50; // Muchisimos mas bloques para que sean delgados
+        const activeBars = Math.round(val * totalBars);
+        for (let i = 0; i < totalBars; i++) {
+            const el = document.createElement('div');
+            if (i < activeBars) {
+                el.className = 'vol-block';
+            } else {
+                el.className = 'vol-dot';
+            }
+            barsContainer.appendChild(el);
+        }
+    };
+
+    const crtVolSlider = document.getElementById('global-volume-slider');
+    if (crtVolSlider) {
+        renderVolumeBars(parseFloat(crtVolSlider.value));
+        crtVolSlider.addEventListener('input', (e) => {
+            const v = parseFloat(e.target.value);
+            if (currentAudio) currentAudio.volume = v;
+            renderVolumeBars(v);
+        });
+    }
+
+
+    // ==================================================
+    // CAMBIO DE CANAL (CH 05 -> CH 04 -> CH 03)
+    // ==================================================
+    const channelIndicator = document.getElementById('crt-channel-indicator');
+    const staticCanvas = document.getElementById('channel-04-canvas');
+    const rpgScreen = document.getElementById('channel-03-rpg');
+    
+    let currentChannel = 5;
+    let staticCtx;
+    
+
+    if (channelIndicator && staticCanvas) {
+        staticCanvas.width = 300;
+        staticCanvas.height = 200;
+        staticCtx = staticCanvas.getContext('2d', { alpha: false });
+
+        function renderStaticNoise() {
+            if (currentChannel !== 4) return; 
+            const w = staticCanvas.width;
+            const h = staticCanvas.height;
+            const imgData = staticCtx.createImageData(w, h);
+            const buffer32 = new Uint32Array(imgData.data.buffer);
+            for (let i = 0; i < buffer32.length; i++) {
+                const v = Math.random() * 255 | 0; 
+                buffer32[i] = (255 << 24) | (v << 16) | (v << 8) | v;
+            }
+            staticCtx.putImageData(imgData, 0, 0);
+            requestAnimationFrame(renderStaticNoise);
+        }
+        
+
+
+        channelIndicator.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentChannel === 5) {
+                // CH 05 -> CH 04 (Estatica)
+                currentChannel = 4;
+                channelIndicator.innerText = 'CH 04';
+                staticCanvas.classList.add('active');
+                requestAnimationFrame(renderStaticNoise);
+                if (currentAudio) currentAudio.pause();
+                triggerGlitch();
+            } else if (currentChannel === 4) {
+                // CH 04 -> CH 03 (RPG Map)
+                currentChannel = 3;
+                channelIndicator.innerText = 'CH 03';
+                staticCanvas.classList.remove('active');
+                if (rpgScreen) rpgScreen.classList.add('active');
+                triggerGlitch();
+            } else {
+                // CH 03 -> CH 05 (Grilla Musical)
+                currentChannel = 5;
+                channelIndicator.innerText = 'CH 05';
+                if (rpgScreen) rpgScreen.classList.remove('active');
+                triggerGlitch();
+            }
+        });
+    }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
