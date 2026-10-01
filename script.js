@@ -140,8 +140,28 @@
                     const popup = document.getElementById('locked-popup');
                     if (popup) {
                         popup.classList.remove('show');
-                        void popup.offsetWidth; // Trigger reflow para reiniciar la animacin
+                        void popup.offsetWidth;
                         popup.classList.add('show');
+
+                        const barIndex = parseInt(el.getAttribute('data-index')) || 1;
+                        const variacion = Math.floor(Math.random() * 4) + 1;
+
+                        window.isErrorStatic = true;
+                        const albumContainer = document.querySelector('.album-container');
+                        const staticCanvas = document.getElementById('channel-04-canvas');
+
+                        if (staticCanvas) requestAnimationFrame(renderStaticNoise);
+
+                        if (typeof playDynamicGlitch === 'function') {
+                            playDynamicGlitch(2000, barIndex, variacion, albumContainer, staticCanvas);
+                        }
+
+                        if (window.errorStaticTimeout) clearTimeout(window.errorStaticTimeout);
+                        window.errorStaticTimeout = setTimeout(() => {
+                            window.isErrorStatic = false;
+                            if (albumContainer) albumContainer.style.opacity = '';
+                            if (staticCanvas) staticCanvas.style.opacity = '';
+                        }, 2000);
                     }
                     return; // Bloquear completamente el clic (ni revela ni reproduce)
                 }
@@ -163,8 +183,14 @@
             } else {
                 // EXCEPCIÓN PARA BOT-5-3 (EXP. - Reveal All)
                 if (el.id === 'reveal-all-trigger') {
+                    const now = new Date();
                     document.querySelectorAll('.item, .sub-item').forEach(item => {
-                        if (!item.classList.contains('revealed')) {
+                        let isLocked = false;
+                        const unlockStr = item.getAttribute('data-unlock-time');
+                        if (unlockStr) {
+                            if (now < new Date(unlockStr)) isLocked = true;
+                        }
+                        if (!isLocked && !item.classList.contains('revealed')) {
                             item.classList.add('revealed');
                         }
                     });
@@ -637,7 +663,7 @@
         staticCtx = staticCanvas.getContext('2d', { alpha: false });
 
         function renderStaticNoise() {
-            if (currentChannel !== 4) return; 
+            if (currentChannel !== 4 && !window.isErrorStatic) return; 
             const w = staticCanvas.width;
             const h = staticCanvas.height;
             const imgData = staticCtx.createImageData(w, h);
@@ -658,10 +684,19 @@
                 // CH 05 -> CH 04 (Estatica)
                 currentChannel = 4;
                 channelIndicator.innerText = 'CH 04';
+                if (window.dynamicGlitchVisualId) {
+                    cancelAnimationFrame(window.dynamicGlitchVisualId);
+                    window.dynamicGlitchVisualId = null;
+                }
+                const albumC = document.querySelector('.album-container');
+                if (albumC) albumC.style.opacity = '';
+                staticCanvas.style.opacity = '';
+                staticCanvas.style.mixBlendMode = 'normal'; // Forzar opaco 100%
                 staticCanvas.classList.add('active');
                 requestAnimationFrame(renderStaticNoise);
                 if (currentAudio) currentAudio.pause();
                 triggerGlitch();
+                if (typeof playSimpleWhiteNoise === 'function') playSimpleWhiteNoise(0, 0.12);
             } else if (currentChannel === 4) {
                 // CH 04 -> CH 03 (RPG Map)
                 currentChannel = 3;
@@ -669,12 +704,14 @@
                 staticCanvas.classList.remove('active');
                 if (rpgScreen) rpgScreen.classList.add('active');
                 triggerGlitch();
+                if (typeof stopContinuousWhiteNoise === 'function') stopContinuousWhiteNoise();
             } else {
                 // CH 03 -> CH 05 (Grilla Musical)
                 currentChannel = 5;
                 channelIndicator.innerText = 'CH 05';
                 if (rpgScreen) rpgScreen.classList.remove('active');
                 triggerGlitch();
+                if (typeof stopContinuousWhiteNoise === 'function') stopContinuousWhiteNoise();
             }
         });
     }
@@ -683,6 +720,191 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+// --- GENERADOR DINAMICO DE ESTATICA (AUDIO + VISUAL) ---
+window.audioCtx = null;
+function playDynamicGlitch(durationMs, barIndex, variation, albumContainer, staticCanvas) {
+    if (!window.audioCtx) {
+        window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (window.audioCtx.state === 'suspended') window.audioCtx.resume();
+    
+    // Generador pseudo-aleatorio para que la variacion sea siempre identica para el mismo candado y version
+    let seed = barIndex * 100 + variation;
+    function seededRandom() {
+        let x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+    }
+    
+    // Crear mapa de picos de estatica
+    const numFlashes = Math.floor(seededRandom() * 4) + 3; // 3 a 6 flashes
+    let points = [{t: 0, v: 0}];
+    let currentTime = 0.05;
+    
+    for (let i=0; i<numFlashes; i++) {
+        let flashStart = currentTime + seededRandom() * 0.1;
+        let flashPeak = flashStart + seededRandom() * 0.05;
+        let flashEnd = flashPeak + seededRandom() * 0.2 + 0.05;
+        let intensity = seededRandom() * 0.5 + 0.4; // 0.4 a 0.9
+        
+        if (flashStart >= 0.95) break;
+        if (flashEnd >= 0.95) flashEnd = 0.95;
+        
+        points.push({t: flashStart, v: 0});
+        points.push({t: flashPeak, v: intensity});
+        points.push({t: flashEnd, v: 0});
+        currentTime = flashEnd;
+    }
+    points.push({t: 1.0, v: 0});
+
+    // 1. Iniciar Animacion Visual con requestAnimationFrame
+    const startTime = performance.now();
+    function animateVisuals(now) {
+        let elapsed = now - startTime;
+        let progress = elapsed / durationMs;
+        if (progress > 1) progress = 1;
+        
+        // Encontrar valor de intensidad interpolando los puntos
+        let currentIntensity = 0;
+        for (let i = 0; i < points.length - 1; i++) {
+            if (progress >= points[i].t && progress <= points[i+1].t) {
+                let range = points[i+1].t - points[i].t;
+                let pct = (progress - points[i].t) / range;
+                currentIntensity = points[i].v + (points[i+1].v - points[i].v) * pct;
+                break;
+            }
+        }
+        
+        if (staticCanvas) {
+            staticCanvas.style.opacity = currentIntensity;
+            staticCanvas.style.mixBlendMode = 'screen';
+        }
+        if (albumContainer) {
+            // El fondo se oscurece inversamente a la estatica (0.05 de opacidad minima cuando intensidad es 0.9)
+            let baseDrop = 1.0 - currentIntensity;
+            if (baseDrop < 0.05) baseDrop = 0.05;
+            albumContainer.style.opacity = baseDrop;
+        }
+        
+        if (progress < 1) {
+            window.dynamicGlitchVisualId = requestAnimationFrame(animateVisuals);
+        } else {
+            window.dynamicGlitchVisualId = null;
+        }
+    }
+    if (window.dynamicGlitchVisualId) cancelAnimationFrame(window.dynamicGlitchVisualId);
+    window.dynamicGlitchVisualId = requestAnimationFrame(animateVisuals);
+
+    // 2. Iniciar Audio
+    const bufferSize = window.audioCtx.sampleRate * (durationMs / 1000); 
+    const buffer = window.audioCtx.createBuffer(1, bufferSize, window.audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1; 
+
+    const noiseSource = window.audioCtx.createBufferSource();
+    noiseSource.buffer = buffer;
+    
+    const gainNode = window.audioCtx.createGain();
+    const audioNow = window.audioCtx.currentTime;
+    const dur = durationMs / 1000;
+    const masterVol = 0.15; 
+    
+    gainNode.gain.setValueAtTime(0, audioNow);
+    points.forEach(p => {
+        gainNode.gain.linearRampToValueAtTime(p.v * masterVol, audioNow + dur * p.t);
+    });
+
+    noiseSource.connect(gainNode);
+    gainNode.connect(window.audioCtx.destination);
+    noiseSource.start(audioNow);
+    
+    setTimeout(() => {
+        noiseSource.stop();
+        noiseSource.disconnect();
+        gainNode.disconnect();
+    }, durationMs + 100);
+}
+
+// --- GENERADOR DE RUIDO BLANCO CONTINUO Y RAFAGAS CORTAS ---
+window.continuousNoiseSource = null;
+window.continuousGainNode = null;
+
+function playSimpleWhiteNoise(durationMs, volume) {
+    if (!window.audioCtx) window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (window.audioCtx.state === 'suspended') window.audioCtx.resume();
+    
+    // Continuo
+    if (durationMs === 0) {
+        if (window.continuousNoiseSource) return; 
+        const bufferSize = window.audioCtx.sampleRate * 2; 
+        const buffer = window.audioCtx.createBuffer(1, bufferSize, window.audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        
+        window.continuousNoiseSource = window.audioCtx.createBufferSource();
+        window.continuousNoiseSource.buffer = buffer;
+        window.continuousNoiseSource.loop = true;
+        
+        window.continuousGainNode = window.audioCtx.createGain();
+        window.continuousGainNode.gain.value = volume || 0.1;
+        
+        window.continuousNoiseSource.connect(window.continuousGainNode);
+        window.continuousGainNode.connect(window.audioCtx.destination);
+        window.continuousNoiseSource.start();
+        return;
+    }
+    
+    // Rafaga (Burst)
+    const bufferSize = window.audioCtx.sampleRate * (durationMs / 1000); 
+    const buffer = window.audioCtx.createBuffer(1, bufferSize, window.audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+    
+    const noiseSource = window.audioCtx.createBufferSource();
+    noiseSource.buffer = buffer;
+    
+    const gainNode = window.audioCtx.createGain();
+    const audioNow = window.audioCtx.currentTime;
+    const dur = durationMs / 1000;
+    
+    gainNode.gain.setValueAtTime(0, audioNow);
+    gainNode.gain.linearRampToValueAtTime(volume || 0.15, audioNow + dur * 0.1);
+    gainNode.gain.setValueAtTime(volume || 0.15, audioNow + dur * 0.8);
+    gainNode.gain.linearRampToValueAtTime(0, audioNow + dur);
+
+    noiseSource.connect(gainNode);
+    gainNode.connect(window.audioCtx.destination);
+    noiseSource.start(audioNow);
+    
+    setTimeout(() => {
+        noiseSource.stop();
+        noiseSource.disconnect();
+        gainNode.disconnect();
+    }, durationMs + 100);
+}
+
+function stopContinuousWhiteNoise() {
+    if (window.continuousNoiseSource && window.audioCtx) {
+        const audioNow = window.audioCtx.currentTime;
+        window.continuousGainNode.gain.linearRampToValueAtTime(0, audioNow + 0.1);
+        setTimeout(() => {
+            if(window.continuousNoiseSource) {
+                window.continuousNoiseSource.stop();
+                window.continuousNoiseSource.disconnect();
+                window.continuousNoiseSource = null;
+            }
+        }, 150);
+    }
+}
 
 
 

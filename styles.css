@@ -547,7 +547,7 @@ body, h1, h2, h3, p, a, div, span, li, button {
 .locked-popup {
     position: fixed;
     top: 50%; left: 50%;
-    transform: translate(-50%, 0);
+    transform: translate(-50%, -50%);
     background: rgba(200, 0, 0, 0.9);
     color: #fff;
     padding: 12px 25px;
@@ -572,7 +572,7 @@ body, h1, h2, h3, p, a, div, span, li, button {
 }
 
 .locked-popup.show {
-    animation: popup-float 2.5s ease-out forwards;
+    animation: popup-static 2.1s step-end forwards;
 }
 
 /* ==================================================
@@ -1111,5 +1111,63 @@ body, h1, h2, h3, p, a, div, span, li, button {
 }
 
 
+
+
+
+/* Variaciones de Error (Sin Señal) */
+/* V1: Suave 3 pulsos */
+.album-container.error-fade-1 { animation: fade-anim-1 2s ease-in-out forwards; }
+#channel-04-canvas.error-static-1 { mix-blend-mode: screen; pointer-events: none; animation: static-anim-1 2s ease-in-out forwards; }
+@keyframes fade-anim-1 {
+    0% { opacity: 1; } 5% { opacity: 0.1; } 10% { opacity: 1; }
+    15% { opacity: 1; } 22% { opacity: 0.15; } 30% { opacity: 1; }
+    40% { opacity: 1; } 50% { opacity: 0.05; } 75% { opacity: 0.05; } 100% { opacity: 1; }
+}
+@keyframes static-anim-1 {
+    0% { opacity: 0; } 5% { opacity: 0.5; } 10% { opacity: 0; }
+    15% { opacity: 0; } 22% { opacity: 0.4; } 30% { opacity: 0; }
+    40% { opacity: 0; } 50% { opacity: 0.6; } 75% { opacity: 0.6; } 100% { opacity: 0; }
+}
+
+/* V2: Un golpe masivo y apagado lento */
+.album-container.error-fade-2 { animation: fade-anim-2 2s ease-out forwards; }
+#channel-04-canvas.error-static-2 { mix-blend-mode: screen; pointer-events: none; animation: static-anim-2 2s ease-out forwards; }
+@keyframes fade-anim-2 { 0% { opacity: 0.05; } 30% { opacity: 0.15; } 100% { opacity: 1; } }
+@keyframes static-anim-2 { 0% { opacity: 0.6; } 30% { opacity: 0.4; } 100% { opacity: 0; } }
+
+/* V3: Violento (5 latigazos directos) */
+.album-container.error-fade-3 { animation: fade-anim-3 2s step-end forwards; }
+#channel-04-canvas.error-static-3 { mix-blend-mode: screen; pointer-events: none; animation: static-anim-3 2s step-end forwards; }
+@keyframes fade-anim-3 {
+    0% { opacity: 0.05; } 10% { opacity: 1; } 20% { opacity: 0.1; } 30% { opacity: 1; }
+    40% { opacity: 0.05; } 50% { opacity: 1; } 60% { opacity: 0.1; } 80% { opacity: 1; }
+    90% { opacity: 0.2; } 100% { opacity: 1; }
+}
+@keyframes static-anim-3 {
+    0% { opacity: 0.6; } 10% { opacity: 0; } 20% { opacity: 0.5; } 30% { opacity: 0; }
+    40% { opacity: 0.7; } 50% { opacity: 0; } 60% { opacity: 0.6; } 80% { opacity: 0; }
+    90% { opacity: 0.4; } 100% { opacity: 0; }
+}
+
+/* V4: Dos golpes suaves (uno largo, uno corto al final) */
+.album-container.error-fade-4 { animation: fade-anim-4 2s ease-in-out forwards; }
+#channel-04-canvas.error-static-4 { mix-blend-mode: screen; pointer-events: none; animation: static-anim-4 2s ease-in-out forwards; }
+@keyframes fade-anim-4 {
+    0% { opacity: 1; } 10% { opacity: 0.05; } 50% { opacity: 0.2; }
+    60% { opacity: 1; } 80% { opacity: 1; } 90% { opacity: 0.1; } 100% { opacity: 1; }
+}
+@keyframes static-anim-4 {
+    0% { opacity: 0; } 10% { opacity: 0.6; } 50% { opacity: 0.4; }
+    60% { opacity: 0; } 80% { opacity: 0; } 90% { opacity: 0.5; } 100% { opacity: 0; }
+}
+
+
+
+
+@keyframes popup-static {
+    0%   { opacity: 1; transform: translate(-50%, -50%); }
+    99%  { opacity: 1; transform: translate(-50%, -50%); }
+    100% { opacity: 0; transform: translate(-50%, -50%); }
+}
 
 
