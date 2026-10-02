@@ -168,6 +168,7 @@
                             if (p) {
                                 p.style.opacity = '';
                                 p.style.transform = 'translate(-50%, -50%)';
+                                p.style.filter = '';
                             }
                         }, 2000);
                     }
@@ -806,9 +807,15 @@ function playDynamicGlitch(durationMs, barIndex, variation, albumContainer, stat
         const popupObj = document.getElementById('locked-popup');
         if (popupObj) {
             popupObj.style.opacity = currentIntensity * 1.5 > 1 ? 1 : currentIntensity * 1.5;
-            let jitterX = (Math.random() - 0.5) * currentIntensity * 15;
-            let jitterY = (Math.random() - 0.5) * currentIntensity * 15;
-            popupObj.style.transform = "translate(calc(-50% + " + jitterX + "px), calc(-50% + " + jitterY + "px))";
+            let jitterX = (Math.random() - 0.5) * currentIntensity * 40;
+            let jitterY = (Math.random() - 0.5) * currentIntensity * 20;
+            let skewX = (Math.random() - 0.5) * currentIntensity * 15;
+            popupObj.style.transform = "translate(calc(-50% + " + jitterX + "px), calc(-50% + " + jitterY + "px)) skewX(" + skewX + "deg)";
+            if (currentIntensity > 0.6) {
+                popupObj.style.filter = "blur(" + (Math.random() * 3) + "px)";
+            } else {
+                popupObj.style.filter = "none";
+            }
         }
         
         if (progress < 1) {
@@ -921,6 +928,8 @@ function stopContinuousWhiteNoise() {
         }, 150);
     }
 }
+
+
 
 
 
