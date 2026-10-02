@@ -647,11 +647,12 @@ body, h1, h2, h3, p, a, div, span, li, button {
         display: flex !important;
         flex-direction: column !important;
         width: 100vw !important;
-        height: 100dvh !important; /* Usa height dinamico para celulares */
+        height: auto !important;
+        aspect-ratio: 3/4 !important;
         position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        transform: none !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
         margin: 0 !important;
     }
 
@@ -1179,6 +1180,7 @@ body, h1, h2, h3, p, a, div, span, li, button {
     99%  { opacity: 1; transform: translate(-50%, -50%); }
     100% { opacity: 0; transform: translate(-50%, -50%); }
 }
+
 
 
 
