@@ -808,7 +808,7 @@ function playDynamicGlitch(durationMs, barIndex, variation, albumContainer, stat
             popupObj.style.opacity = currentIntensity * 1.5 > 1 ? 1 : currentIntensity * 1.5;
             let jitterX = (Math.random() - 0.5) * currentIntensity * 15;
             let jitterY = (Math.random() - 0.5) * currentIntensity * 15;
-            popupObj.style.transform = 	ranslate(calc(-50% + px), calc(-50% + px));
+            popupObj.style.transform = "translate(calc(-50% + " + jitterX + "px), calc(-50% + " + jitterY + "px))";
         }
         
         if (progress < 1) {
