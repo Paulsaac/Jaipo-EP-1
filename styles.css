@@ -548,7 +548,7 @@ body, h1, h2, h3, p, a, div, span, li, button {
     position: fixed;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    background: repeating-linear-gradient(0deg, #3a3a3a, #3a3a3a 2px, #222222 3px, #222222 4px);
+    background: repeating-linear-gradient(0deg, #1c1c1c, #1c1c1c 2px, #0a0a0a 3px, #0a0a0a 4px);
     padding: 20px 40px;
     border-radius: 0;
     z-index: 9999;
@@ -938,7 +938,7 @@ body, h1, h2, h3, p, a, div, span, li, button {
     font-size: 3.5rem;
     font-weight: bold;
     letter-spacing: -2px;
-    background: repeating-linear-gradient(0deg, #ffffff, #ffffff 2px, #cccccc 3px, #cccccc 4px);
+    background: repeating-linear-gradient(0deg, #00ff00, #00ff00 2px, #00aa00 3px, #00aa00 4px);
     -webkit-background-clip: text;
     color: transparent;
     filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.8));
