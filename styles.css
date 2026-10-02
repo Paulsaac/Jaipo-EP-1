@@ -638,21 +638,23 @@ body, h1, h2, h3, p, a, div, span, li, button {
     }
     .crt-screen {
         display: block !important;
-        position: absolute;
-        top: 0; left: 0;
-        width: 100vw;
-        height: 100vh;
+        position: absolute !important;
+        top: 50% !important; 
+        left: 50% !important;
+        width: 100vw !important;
+        height: 133.33vw !important;
+        transform: translate(-50%, -50%) !important;
+        overflow: hidden !important;
     }
     .album-container {
         display: flex !important;
         flex-direction: column !important;
-        width: 100vw !important;
-        height: auto !important;
-        aspect-ratio: 3/4 !important;
+        width: 100% !important;
+        height: 100% !important;
         position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
         margin: 0 !important;
     }
 
