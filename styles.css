@@ -400,258 +400,12 @@ body {
     background: #fff; 
     border-top: 2px solid #808080; border-left: 2px solid #808080;
     border-right: 2px solid #fff; border-bottom: 2px solid #fff;
-    height: auto; max-height: 250px; overflow-y: auto;
-}
-.retro-playlist li {
-    font-size: 0.9rem !important; padding: 4px 8px; 
-    border-bottom: none;
-    cursor: default; transition: none;
-    border-radius: 0; margin-bottom: 0;
-    letter-spacing: 0 !important; color: #000;
-    font-family: 'Tahoma', 'Arial', sans-serif !important;
-}
-.retro-playlist li:hover { 
-    background: #000080; color: #fff; padding-left: 8px;
-}
-.retro-playlist li.active-track { 
-    background: #000080; color: #fff; font-weight: normal;
-    box-shadow: none; border: 1px dotted #fff;
-}
-
-.player-controls {
-    display: flex; justify-content: center; margin-bottom: 10px;
-}
-.play-pause-btn {
-    background: #c0c0c0; color: #000;
-    border-top: 2px solid #fff; border-left: 2px solid #fff;
-    border-right: 2px solid #808080; border-bottom: 2px solid #808080;
-    border-radius: 0; padding: 6px 20px;
-    font-size: 0.9rem; cursor: pointer; transition: none;
-    font-family: 'Tahoma', 'Arial', sans-serif !important;
-    font-weight: normal !important;
-}
-.play-pause-btn:active {
-    border-top: 2px solid #808080; border-left: 2px solid #808080;
-    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
-    transform: none !important;
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-.play-pause-btn-small {
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: transform 0.2s ease, text-shadow 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
-.play-pause-btn-small:hover {
-    transform: scale(1.1);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-}
-.play-pause-btn-small:active {
-    transform: scale(0.9);
-}
-
-.retro-modal-content {
-    filter: invert(1);
-    font-family: 'VT323', monospace !important;
-}
-.retro-header h3 {
-    font-family: 'VT323', monospace !important;
-    font-size: 1.8rem !important;
-    letter-spacing: 2px !important;
-}
-.retro-playlist li {
-    font-family: 'VT323', monospace !important;
-    font-size: 1.4rem !important;
-}
-
-/* ==================================================
-   TIPOGRAFÍA GLOBAL
-   ================================================== */
-body, h1, h2, h3, p, a, div, span, li, button {
-    font-family: 'VT323', monospace !important;
-}
-.content h2 {
-    font-size: 2rem !important;
-    letter-spacing: 3px !important;
-}
-.content p {
-    font-size: 1.2rem !important;
-}
-.startup-message {
-    font-size: 1.8rem !important;
-    letter-spacing: 2px !important;
-}
-.startup-cursor {
-    font-size: 2rem !important;
-}
-
-
-
-
-.startup-screen.turning-on {
-    animation: tv-turn-on 0.4s forwards;
-}
-@keyframes tv-turn-on {
-    0% { transform: scale(0, 0); opacity: 0; }
-    50% { transform: scale(1, 0.01); opacity: 1; }
-    100% { transform: scale(1, 1); opacity: 1; }
-}
-
-.crt-screen.turning-off {
-    animation: tv-turn-off 0.4s forwards;
-}
-
-
-
-.content h2, .content p {
-    text-shadow: 
-        -1px -1px 0 #000,  
-         1px -1px 0 #000,
-        -1px  1px 0 #000,
-         1px  1px 0 #000,
-         0px 2px 10px rgba(0,0,0,0.9) !important;
-}
-
-@keyframes barrel-roll {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-.do-barrel-roll {
-    animation: barrel-roll 1.5s cubic-bezier(0.45, 0.05, 0.55, 0.95);
-}
-
-/* Asegurar que la X se vea en bot-6 sin necesidad de hover */
-.bot-6.show-x .content {
-    opacity: 1 !important;
-    transform: translate(-50%, -50%) !important;
-}
-
-
-
-
-
-/* ==================================================
-   POPUP DE CANCIONES BLOQUEADAS
-   ================================================== */
-.locked-popup {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: repeating-linear-gradient(0deg, #1c1c1c, #1c1c1c 2px, #0a0a0a 3px, #0a0a0a 4px);
-    padding: 20px 40px;
-    border-radius: 0;
-    z-index: 9999;
-    opacity: 0;
-    pointer-events: none;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.locked-popup-text {
-    font-family: 'Arial', sans-serif;
-    font-size: 2.5rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: -2px;
-    background: repeating-linear-gradient(0deg, #ffffff, #ffffff 2px, #cccccc 3px, #cccccc 4px);
-    -webkit-background-clip: text;
-    color: transparent;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-    margin: 0;
-}
-
-@keyframes popup-float {
-    0% { opacity: 0; transform: translate(-50%, 20px); }
-    15% { opacity: 1; transform: translate(-50%, -10px); }
-    80% { opacity: 1; transform: translate(-50%, -50px); }
-    100% { opacity: 0; transform: translate(-50%, -70px); }
-}
-
-.locked-popup.show {
-    animation: popup-static 2.1s step-end forwards;
-}
-
-/* ==================================================
-   OPTIMIZACION PARA CELULARES (MOBILE RESPONSIVE)
-   ================================================== */
-@media (max-width: 768px) {
-    /* 1. Comportamiento elástico agresivo en pantallas angostas */
-    /* Cuando se toca una barra, debe crecer mucho más para que se vea la foto y el texto */
-
-    .startup-screen::before {
-        background-size: 100% auto !important; /* Más pequeño en el centro para móviles */
-        background-position: center !important;
-    }
-    .item.revealed, .sub-item.revealed { flex-grow: 2.5 !important; }
-    .item.hovered, .sub-item.hovered { flex-grow: 3.0 !important; }
-    .item.playing, .sub-item.playing { flex-grow: 3.5 !important; }
-
-    /* 2. Reducir la tipografía gigante para que quepa en las barras verticales de un celular */
-    .content h2 { 
-        font-size: 1.2rem !important; 
-        letter-spacing: 1px !important; 
-        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 1px 5px rgba(0,0,0,0.9) !important;
-    }
-    .content p { font-size: 0.85rem !important; }
-    
-    /* Achicar íconos gigantes */
-    #grid-player-icon { font-size: 2.5rem !important; }
-    .bot-6 .content div { font-size: 2.5rem !important; } /* La X de emergencia */
-
-    /* 3. Ajustes de la Terminal de Recepción */
-    .startup-message { font-size: 1.2rem !important; letter-spacing: 1px !important; }
-    .click-prompt { font-size: 0.9rem !important; }
-    #water-offset { /* Reducir aún más la distorsión del agua en pantallas chicas */ }
-    
-    /* 4. Ajustes del Pop-up de Bloqueo */
-    .locked-popup { 
-        padding: 15px 20px !important; 
-        width: 85%; /* Evita que se salga por los bordes */
-    }
-    .locked-popup-text {
-        font-size: 1.8rem !important;
-    }
-
-    /* 5. Ajustes del Reproductor Win95 */
-    .retro-modal-content { 
-        width: 95% !important; 
-        padding: 2px !important; 
-    }
-    .retro-header h3 { font-size: 0.85rem !important; }
-    .retro-playlist { height: auto !important; max-height: 40vh !important; }
-    .retro-playlist li { font-size: 0.85rem !important; padding: 10px 8px !important; }
-    .play-pause-btn { padding: 8px 20px !important; }
-    /* Centrar la grilla y hacerla más cuadrada en celular */    body {
-        display: block !important;
-    }
-    .crt-screen {
-        display: block !important;
-        position: absolute;
-        top: 0; left: 0;
-        width: 100vw;
-        height: 100vh;
-    }
-    .album-container {
-        display: flex !important;
-        flex-direction: column !important;
-        width: 100vw !important;
-        height: 100dvh !important; /* Usa height dinamico para celulares */
+    height: auto !important;
+        aspect-ratio: 3/4 !important;
         position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        transform: none !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
         margin: 0 !important;
     }
 
@@ -1104,6 +858,18 @@ body, h1, h2, h3, p, a, div, span, li, button {
 
 
 @media (max-width: 768px) {
+    .album-container {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100vw !important;
+        height: auto !important;
+        aspect-ratio: 3/4 !important;
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 !important;
+    }
     /* Ajustes específicos para el Overlay de Volumen en Móvil */
     #crt-volume-container {
         bottom: 22vh !important; /* Levantar la barra significativamente para que quede en la Fila 3 y esquive la interfaz del navegador */
@@ -1179,6 +945,7 @@ body, h1, h2, h3, p, a, div, span, li, button {
     99%  { opacity: 1; transform: translate(-50%, -50%); }
     100% { opacity: 0; transform: translate(-50%, -50%); }
 }
+
 
 
 
